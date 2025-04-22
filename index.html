@@ -3,35 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DUAL SIM DATA LOOKUP</title>
+  <title>SIM DATA LOOKUP</title>
   <style>
     body {
       margin: 0;
-      padding: 20px;
+      padding: 0;
       background: #000;
       font-family: 'Courier New', monospace;
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      animation: fadeIn 1s ease-in-out;
-      overflow: auto;
-    }
-
-    .container {
-      display: flex;
-      flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
-      width: 100%;
-      max-width: 900px;
+      align-items: center;
+      height: 100vh;
+      animation: fadeIn 1s ease-in-out;
+      overflow: hidden;
     }
 
     .box {
       background: rgba(0, 20, 0, 0.8);
       border: 1px solid #0f0;
       box-shadow: 0 0 25px #0f0;
-      padding: 20px;
+      padding: 30px 20px;
       border-radius: 5px;
       width: 100%;
       max-width: 400px;
@@ -51,19 +42,19 @@
 
     .box h2 {
       color: #0f0;
-      font-size: 20px;
-      margin-bottom: 15px;
+      font-size: 24px;
+      margin-bottom: 20px;
       text-shadow: 0 0 5px #0f0;
       letter-spacing: 1px;
     }
 
     .box input {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border-radius: 0;
       border: 1px solid #0f0;
-      margin-bottom: 15px;
-      font-size: 14px;
+      margin-bottom: 20px;
+      font-size: 16px;
       background: #000;
       color: #0f0;
       box-shadow: inset 0 0 10px #0f0;
@@ -77,11 +68,11 @@
 
     .box button {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #0f0;
       border-radius: 0;
-      margin: 8px 0;
-      font-size: 14px;
+      margin: 10px 0;
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
       color: #000;
@@ -98,20 +89,19 @@
       color: #0f0;
     }
 
-    #responseBox1, #responseBox2 {
+    #responseBox {
       color: #0f0;
-      margin-top: 15px;
-      font-size: 14px;
+      margin-top: 20px;
+      font-size: 16px;
       display: none;
       animation: fadeIn 1s ease-in-out;
       background: rgba(0, 10, 0, 0.5);
       border: 1px solid #0f0;
-      padding: 12px;
+      padding: 15px;
       border-radius: 0;
       text-align: left;
       font-family: 'Courier New', monospace;
       line-height: 1.5;
-      min-height: 100px;
     }
 
     @keyframes fadeIn {
@@ -129,68 +119,38 @@
       100% { opacity: 1; }
     }
 
-    .main-title {
-      color: #0f0;
-      text-shadow: 0 0 15px #0f0;
-      font-size: 24px;
-      margin: 20px 0;
-      font-weight: bold;
-      letter-spacing: 3px;
-      text-align: center;
-    }
-
     .footer {
       color: #0a0;
-      margin-top: 30px;
+      margin-top: 20px;
       font-size: 14px;
-      text-align: center;
     }
   </style>
 </head>
 <body>
-  <div class="main-title">DUAL SIM DATA TERMINAL</div>
-  
-  <div class="container">
-    <!-- First API Box -->
-    <div class="box">
-      <div class="top-title">TEAM BLACK HAT DATABASE</div>
-      <h2>🔍 API 1: SIM DATA</h2>
-      <input type="text" id="number1" placeholder="ENTER TARGET NUMBER" required />
-      <button onclick="fetchData1()">⏎ EXECUTE QUERY 1</button>
+  <div class="box">
+    <div class="top-title">TEAM BLACK HAT DATABASE</div>
+    <h2>🔍 SIM DATA TERMINAL</h2>
+    <input type="text" id="number" placeholder="ENTER TARGET NUMBER" required />
+    <button onclick="fetchData()">⏎ EXECUTE QUERY</button>
 
-      <div id="responseBox1"></div>
+    <div id="responseBox"></div>
 
-      <button id="shareButton1" class="whatsapp-btn" onclick="shareWhatsApp(1)" style="display: none;">📲 EXPORT TO WHATSAPP</button>
-    </div>
-
-    <!-- Second API Box -->
-    <div class="box">
-      <div class="top-title">LEGEND X DATABASE</div>
-      <h2>🔍 API 2: SIM DATA</h2>
-      <input type="text" id="number2" placeholder="ENTER TARGET NUMBER" required />
-      <button onclick="fetchData2()">⏎ EXECUTE QUERY 2</button>
-
-      <div id="responseBox2"></div>
-
-      <button id="shareButton2" class="whatsapp-btn" onclick="shareWhatsApp(2)" style="display: none;">📲 EXPORT TO WHATSAPP</button>
-    </div>
+    <button id="shareButton" onclick="shareWhatsApp()" style="display: none;">📲 EXPORT TO WHATSAPP</button>
+    <div class="footer">DEVELOPED BY OLD HACKER</div>
   </div>
 
-  <div class="footer">DEVELOPED BY OLD HACKER | DUAL API SYSTEM</div>
-
   <script>
-    // First API function
-    async function fetchData1() {
-      const number = document.getElementById("number1").value.trim();
-      const responseBox = document.getElementById("responseBox1");
-      const shareButton = document.getElementById("shareButton1");
+    async function fetchData() {
+      const number = document.getElementById("number").value.trim();
+      const responseBox = document.getElementById("responseBox");
+      const shareButton = document.getElementById("shareButton");
 
       if (!number) {
         alert("INPUT ERROR: NO TARGET SPECIFIED");
         return;
       }
 
-      responseBox.innerHTML = `<div>CONNECTING TO API 1... <span class="blink">█</span></div>`;
+      responseBox.innerHTML = `<div>CONNECTING TO DATABASE... <span class="blink">█</span></div>`;
       responseBox.style.display = "block";
       shareButton.style.display = "none";
 
@@ -205,8 +165,8 @@
           if (apiData.status === "success" && Array.isArray(apiData.data) && apiData.data.length > 0) {
             const user = apiData.data[0];
             const content = `
-> API 1 DATABASE ENTRY FOUND
-> -------------------------
+> DATABASE ENTRY FOUND
+> -------------------
 📞 MOBILE: ${user.Mobile || "NOT FOUND"}
 👤 NAME: ${user.Name || "NOT FOUND"}
 🆔 CNIC: ${user.CNIC || "NOT FOUND"}
@@ -216,90 +176,41 @@
             responseBox.innerText = content;
             shareButton.style.display = "inline-block";
           } else {
-            responseBox.innerHTML = `<div style="color: #0f0; font-weight: bold;">>> API 1 ERROR: DATA NOT FOUND</div>`;
+            responseBox.innerHTML = `<div style="color: #0f0; font-weight: bold;">>> ERROR 404: DATA NOT FOUND</div>`;
             shareButton.style.display = "none";
           }
         }, 1500);
       } catch (e) {
         setTimeout(() => {
-          responseBox.innerHTML = `<div style="color: #f00; font-weight: bold;">>> API 1 CONNECTION FAILED</div>`;
+          responseBox.innerHTML = `<div style="color: #f00; font-weight: bold;">>> SYSTEM ERROR: CONNECTION FAILED</div>`;
           shareButton.style.display = "none";
         }, 1500);
       }
     }
 
-    // Second API function
-    async function fetchData2() {
-      const number = document.getElementById("number2").value.trim();
-      const responseBox = document.getElementById("responseBox2");
-      const shareButton = document.getElementById("shareButton2");
-
-      if (!number) {
-        alert("INPUT ERROR: NO TARGET SPECIFIED");
-        return;
-      }
-
-      responseBox.innerHTML = `<div>CONNECTING TO API 2... <span class="blink">█</span></div>`;
-      responseBox.style.display = "block";
-      shareButton.style.display = "none";
-
-      const url = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://legendxdata.site/Api/simdata.php?phone=${number}`)}`;
-
-      try {
-        const res = await fetch(url);
-        const data = await res.json();
-
-        setTimeout(() => {
-          if (data.status === "success" || data.data) {
-            const content = `
-> API 2 DATABASE ENTRY FOUND
-> -------------------------
-📞 MOBILE: ${data.data?.Mobile || data.data?.phone || "NOT FOUND"}
-👤 NAME: ${data.data?.Name || data.data?.name || "NOT FOUND"}
-🆔 CNIC: ${data.data?.CNIC || data.data?.cnic || "NOT FOUND"}
-📍 ADDRESS: ${data.data?.Address || data.data?.address || "NOT FOUND"}
-📶 OPERATOR: ${data.data?.Operator || data.data?.operator || "NOT FOUND"}
-            `;
-            responseBox.innerText = content;
-            shareButton.style.display = "inline-block";
-          } else {
-            responseBox.innerHTML = `<div style="color: #0f0; font-weight: bold;">>> API 2 ERROR: DATA NOT FOUND</div>`;
-            shareButton.style.display = "none";
-          }
-        }, 1500);
-      } catch (e) {
-        setTimeout(() => {
-          responseBox.innerHTML = `<div style="color: #f00; font-weight: bold;">>> API 2 CONNECTION FAILED</div>`;
-          shareButton.style.display = "none";
-        }, 1500);
-      }
-    }
-
-    function shareWhatsApp(apiNum) {
-      const responseBox = document.getElementById(`responseBox${apiNum}`);
-      const text = encodeURIComponent(`HACKER TOOL RESULTS (API ${apiNum}):\n` + responseBox.innerText);
+    function shareWhatsApp() {
+      const responseBox = document.getElementById("responseBox");
+      const text = encodeURIComponent("HACKER TOOL RESULTS:\n" + responseBox.innerText);
       const url = `https://wa.me/?text=${text}`;
       window.open(url, '_blank');
     }
 
-    // Add typing effect to both input placeholders
-    function typePlaceholder(element, text) {
-      let i = 0;
-      function typing() {
-        if (i < text.length) {
-          element.placeholder = text.substring(0, i+1);
-          i++;
-          setTimeout(typing, Math.random() * 100 + 50);
-        }
+    // Add typing effect to input placeholder
+    const input = document.getElementById("number");
+    const originalPlaceholder = "ENTER TARGET NUMBER";
+    let i = 0;
+    
+    function typePlaceholder() {
+      if (i < originalPlaceholder.length) {
+        input.placeholder = originalPlaceholder.substring(0, i+1);
+        i++;
+        setTimeout(typePlaceholder, Math.random() * 100 + 50);
       }
-      typing();
     }
     
+    // Start typing effect after page loads
     window.onload = function() {
-      setTimeout(() => {
-        typePlaceholder(document.getElementById("number1"), "ENTER TARGET NUMBER");
-        typePlaceholder(document.getElementById("number2"), "ENTER TARGET NUMBER");
-      }, 500);
+      setTimeout(typePlaceholder, 500);
     };
   </script>
 </body>
