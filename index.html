@@ -1,149 +1,306 @@
-<?php
-$result = "";
-
-function fetch_sim_data($phone) {
-    $api_url = "https://legendxdata.site/Api/simdata.php?phone=" . urlencode($phone);
-    
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $api_url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $response = curl_exec($ch);
-    curl_close($ch);
-    
-    return json_decode($response, true);
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $phone = htmlspecialchars($_POST['phone']);
-    $data = fetch_sim_data($phone);
-
-    if (!empty($data) && is_array($data) && isset($data[0])) {
-        $user = $data[0];
-
-        $result = '<div class="result-box">
-            <h3>🔎 SIM Data Found</h3>
-            <p><strong>📞 Mobile:</strong> <span>' . ($user['Number'] ?? "Not found") . '</span></p>
-            <p><strong>👤 Name:</strong> <span>' . ($user['Name'] ?? "Not found") . '</span></p>
-            <p><strong>🆔 CNIC:</strong> <span>' . ($user['CNIC'] ?? "Not found") . '</span></p>
-            <p><strong>📍 Address:</strong> <span>' . ($user['Address'] ?? "Not found") . '</span></p>
-            <p><strong>📶 Operator:</strong> <span>' . ($user['Operator'] ?? "Not found") . '</span></p>
-            <button class="copy-btn" onclick="copyData()">📋 Copy All Data</button>
-            <button class="whatsapp-btn" onclick="shareOnWhatsApp()">📤 Share on WhatsApp</button>
-        </div>';
-    } else {
-        $result = '<div class="result-box error">❌ No data found for this number.</div>';
-    }
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIM Data Lookup</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-            background: #121212;
-            color: #fff;
-        }
-        .container {
-            background: #1e1e1e;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 15px red;
-            max-width: 400px;
-            margin: auto;
-        }
-        h2 {
-            color: red;
-        }
-        input, .btn {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: none;
-            background: #2a2a2a;
-            color: white;
-            font-size: 16px;
-        }
-        .btn {
-            background: linear-gradient(to right, red, darkred);
-            cursor: pointer;
-        }
-        .btn:hover {
-            background: linear-gradient(to right, darkred, red);
-        }
-        .result-box {
-            background: #111;
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px red;
-            text-align: left;
-        }
-        .result-box h3 {
-            color: yellow;
-            text-align: center;
-            text-transform: uppercase;
-            border-bottom: 2px solid yellow;
-            padding-bottom: 5px;
-        }
-        .result-box p {
-            font-size: 18px;
-            margin: 8px 0;
-        }
-        .result-box strong {
-            color: cyan;
-        }
-        .copy-btn, .whatsapp-btn {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            color: white;
-        }
-        .copy-btn {
-            background: red;
-        }
-        .copy-btn:hover {
-            background: darkred;
-        }
-        .whatsapp-btn {
-            background: green;
-        }
-        .whatsapp-btn:hover {
-            background: darkgreen;
-        }
-        .error {
-            background: #ff4444;
-            box-shadow: 0 0 10px red;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DUAL SIM DATA LOOKUP</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #000;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      animation: fadeIn 1s ease-in-out;
+      overflow: auto;
+    }
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 900px;
+    }
+
+    .box {
+      background: rgba(0, 20, 0, 0.8);
+      border: 1px solid #0f0;
+      box-shadow: 0 0 25px #0f0;
+      padding: 20px;
+      border-radius: 5px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+      position: relative;
+    }
+
+    .top-title {
+      color: #0f0;
+      text-shadow: 0 0 10px #0f0;
+      font-size: 18px;
+      margin-bottom: 5px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    .box h2 {
+      color: #0f0;
+      font-size: 20px;
+      margin-bottom: 15px;
+      text-shadow: 0 0 5px #0f0;
+      letter-spacing: 1px;
+    }
+
+    .box input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 0;
+      border: 1px solid #0f0;
+      margin-bottom: 15px;
+      font-size: 14px;
+      background: #000;
+      color: #0f0;
+      box-shadow: inset 0 0 10px #0f0;
+      font-family: 'Courier New', monospace;
+    }
+
+    .box input::placeholder {
+      color: #0a0;
+      opacity: 0.7;
+    }
+
+    .box button {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #0f0;
+      border-radius: 0;
+      margin: 8px 0;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #000;
+      background: #0f0;
+      box-shadow: 0 0 15px #0f0;
+      transition: 0.3s;
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1px;
+    }
+
+    .box button:hover {
+      transform: scale(1.02);
+      background: #0a0;
+      color: #0f0;
+    }
+
+    #responseBox1, #responseBox2 {
+      color: #0f0;
+      margin-top: 15px;
+      font-size: 14px;
+      display: none;
+      animation: fadeIn 1s ease-in-out;
+      background: rgba(0, 10, 0, 0.5);
+      border: 1px solid #0f0;
+      padding: 12px;
+      border-radius: 0;
+      text-align: left;
+      font-family: 'Courier New', monospace;
+      line-height: 1.5;
+      min-height: 100px;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .blink {
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0% { opacity: 1; }
+      50% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    .main-title {
+      color: #0f0;
+      text-shadow: 0 0 15px #0f0;
+      font-size: 24px;
+      margin: 20px 0;
+      font-weight: bold;
+      letter-spacing: 3px;
+      text-align: center;
+    }
+
+    .footer {
+      color: #0a0;
+      margin-top: 30px;
+      font-size: 14px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h2>🔍 Search SIM Details</h2>
-        <form method="POST">
-            <input type="text" name="phone" placeholder="Enter phone number" required>
-            <button type="submit" class="btn">🔎 Get Details</button>
-        </form>
-        <div id="response">
-            <?php echo $result; ?>
-        </div>
-        <a href="https://whatsapp.com/channel/0029VajZpqL7T8bRvUqAU23A" target="_blank">
-            <button class="btn">💬 Contact Developer</button>
-        </a>
+  <div class="main-title">DUAL SIM DATA TERMINAL</div>
+  
+  <div class="container">
+    <!-- First API Box -->
+    <div class="box">
+      <div class="top-title">TEAM BLACK HAT DATABASE</div>
+      <h2>🔍 API 1: SIM DATA</h2>
+      <input type="text" id="number1" placeholder="ENTER TARGET NUMBER" required />
+      <button onclick="fetchData1()">⏎ EXECUTE QUERY 1</button>
+
+      <div id="responseBox1"></div>
+
+      <button id="shareButton1" class="whatsapp-btn" onclick="shareWhatsApp(1)" style="display: none;">📲 EXPORT TO WHATSAPP</button>
     </div>
 
-    <script>
-        function copyData() {
-            let text = document.querySelector(".result-box").innerText;
-            navigator.clipboard.writeText(text).then(() => {
-                alert("✅ Data copied to clipboard!");
+    <!-- Second API Box -->
+    <div class="box">
+      <div class="top-title">LEGEND X DATABASE</div>
+      <h2>🔍 API 2: SIM DATA</h2>
+      <input type="text" id="number2" placeholder="ENTER TARGET NUMBER" required />
+      <button onclick="fetchData2()">⏎ EXECUTE QUERY 2</button>
+
+      <div id="responseBox2"></div>
+
+      <button id="shareButton2" class="whatsapp-btn" onclick="shareWhatsApp(2)" style="display: none;">📲 EXPORT TO WHATSAPP</button>
+    </div>
+  </div>
+
+  <div class="footer">DEVELOPED BY OLD HACKER | DUAL API SYSTEM</div>
+
+  <script>
+    // First API function
+    async function fetchData1() {
+      const number = document.getElementById("number1").value.trim();
+      const responseBox = document.getElementById("responseBox1");
+      const shareButton = document.getElementById("shareButton1");
+
+      if (!number) {
+        alert("INPUT ERROR: NO TARGET SPECIFIED");
+        return;
+      }
+
+      responseBox.innerHTML = `<div>CONNECTING TO API 1... <span class="blink">█</span></div>`;
+      responseBox.style.display = "block";
+      shareButton.style.display = "none";
+
+      const url = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://fam-official.serv00.net/sim/api.php?num=${number}`)}`;
+
+      try {
+        const res = await fetch(url);
+        const json = await res.json();
+        const apiData = JSON.parse(json.contents);
+
+        setTimeout(() => {
+          if (apiData.status === "success" && Array.isArray(apiData.data) && apiData.data.length > 0) {
+            const user = apiData.data[0];
+            const content = `
+> API 1 DATABASE ENTRY FOUND
+> -------------------------
+📞 MOBILE: ${user.Mobile || "NOT FOUND"}
+👤 NAME: ${user.Name || "NOT FOUND"}
+🆔 CNIC: ${user.CNIC || "NOT FOUND"}
+📍 ADDRESS: ${user.Address || "NOT FOUND"}
+📶 OPERATOR: ${user.Operator || "NOT FOUND"}
+            `;
+            responseBox.innerText = content;
+            shareButton.style.display = "inline-block";
+          } else {
+            responseBox.innerHTML = `<div style="color: #0f0; font-weight: bold;">>> API 1 ERROR: DATA NOT FOUND</div>`;
+            shareButton.style.display = "none";
+          }
+        }, 1500);
+      } catch (e) {
+        setTimeout(() => {
+          responseBox.innerHTML = `<div style="color: #f00; font-weight: bold;">>> API 1 CONNECTION FAILED</div>`;
+          shareButton.style.display = "none";
+        }, 1500);
+      }
+    }
+
+    // Second API function
+    async function fetchData2() {
+      const number = document.getElementById("number2").value.trim();
+      const responseBox = document.getElementById("responseBox2");
+      const shareButton = document.getElementById("shareButton2");
+
+      if (!number) {
+        alert("INPUT ERROR: NO TARGET SPECIFIED");
+        return;
+      }
+
+      responseBox.innerHTML = `<div>CONNECTING TO API 2... <span class="blink">█</span></div>`;
+      responseBox.style.display = "block";
+      shareButton.style.display = "none";
+
+      const url = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://legendxdata.site/Api/simdata.php?phone=${number}`)}`;
+
+      try {
+        const res = await fetch(url);
+        const data = await res.json();
+
+        setTimeout(() => {
+          if (data.status === "success" || data.data) {
+            const content = `
+> API 2 DATABASE ENTRY FOUND
+> -------------------------
+📞 MOBILE: ${data.data?.Mobile || data.data?.phone || "NOT FOUND"}
+👤 NAME: ${data.data?.Name || data.data?.name || "NOT FOUND"}
+🆔 CNIC: ${data.data?.CNIC || data.data?.cnic || "NOT FOUND"}
+📍 ADDRESS: ${data.data?.Address || data.data?.address || "NOT FOUND"}
+📶 OPERATOR: ${data.data?.Operator || data.data?.operator || "NOT FOUND"}
+            `;
+            responseBox.innerText = content;
+            shareButton.style.display = "inline-block";
+          } else {
+            responseBox.innerHTML = `<div style="color: #0f0; font-weight: bold;">>> API 2 ERROR: DATA NOT FOUND</div>`;
+            shareButton.style.display = "none";
+          }
+        }, 1500);
+      } catch (e) {
+        setTimeout(() => {
+          responseBox.innerHTML = `<div style="color: #f00; font-weight: bold;">>> API 2 CONNECTION FAILED</div>`;
+          shareButton.style.display = "none";
+        }, 1500);
+      }
+    }
+
+    function shareWhatsApp(apiNum) {
+      const responseBox = document.getElementById(`responseBox${apiNum}`);
+      const text = encodeURIComponent(`HACKER TOOL RESULTS (API ${apiNum}):\n` + responseBox.innerText);
+      const url = `https://wa.me/?text=${text}`;
+      window.open(url, '_blank');
+    }
+
+    // Add typing effect to both input placeholders
+    function typePlaceholder(element, text) {
+      let i = 0;
+      function typing() {
+        if (i < text.length) {
+          element.placeholder = text.substring(0, i+1);
+          i++;
+          setTimeout(typing, Math.random() * 100 + 50);
+        }
+      }
+      typing();
+    }
+    
+    window.onload = function() {
+      setTimeout(() => {
+        typePlaceholder(document.getElementById("number1"), "ENTER TARGET NUMBER");
+        typePlaceholder(document.getElementById("number2"), "ENTER TARGET NUMBER");
+      }, 500);
+    };
+  </script>
+</body>
+</html>
