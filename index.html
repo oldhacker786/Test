@@ -1,48 +1,129 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Image Metadata Extractor</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
+  <title>🕵️‍♂️ Media Metadata Extractor - OLD-HACKER</title>
+  <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
+      background: #0d0d0d;
+      color: #00ff99;
+      font-family: 'Courier New', monospace;
       padding: 20px;
+      text-align: center;
     }
-    .container {
-      background-color: #fff;
+    h2 {
+      color: #00ff99;
+      text-shadow: 0 0 5px #00ff99;
+    }
+    .box {
+      background: #111;
+      border: 1px solid #00ff99;
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
       max-width: 600px;
       margin: auto;
+      box-shadow: 0 0 20px #00ff9955;
+    }
+    .info {
+      margin-top: 20px;
+      text-align: left;
     }
     input[type="file"] {
-      margin-bottom: 20px;
-    }
-    pre {
-      background-color: #eee;
       padding: 10px;
+      background: #222;
+      color: #00ff99;
+      border: 1px solid #00ff99;
       border-radius: 5px;
-      overflow-x: auto;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    .whatsapp-btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 15px;
+      background: #25D366;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      box-shadow: 0 0 5px #25D366;
+    }
+    footer {
+      margin-top: 30px;
+      color: #555;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>📸 Image Metadata Extractor</h2>
-    <input type="file" id="fileInput" accept="image/*">
-    <pre id="output">Select an image to view its metadata...</pre>
-  </div>  <script>
-    document.getElementById('fileInput').addEventListener('change', function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
+  <div class="box">
+    <h2>📸 Media Metadata Extractor</h2>
+    <input type="file" id="fileInput" accept="image/*,video/*">
+    <div class="info" id="metadata"></div>
 
-      EXIF.getData(file, function() {
-        const allMetaData = EXIF.getAllTags(this);
-        document.getElementById('output').textContent = JSON.stringify(allMetaData, null, 2);
-      });
+    <a href="https://whatsapp.com/channel/0029VavHzv259PwTIz1XxJ09" target="_blank" class="whatsapp-btn">
+      📲 Join My WhatsApp Channel
+    </a>
+
+    <footer>👨‍💻 Developed by <b>OLD-HACKER</b></footer>
+  </div>
+
+  <script>
+    document.getElementById("fileInput").addEventListener("change", function(e) {
+      const file = e.target.files[0];
+      const output = document.getElementById("metadata");
+      output.innerHTML = "<b>⏳ Loading...</b>";
+
+      if (file.type.startsWith("image/")) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const img = new Image();
+          img.onload = function() {
+            EXIF.getData(img, function() {
+              const allMeta = EXIF.getAllTags(this);
+              const date = allMeta.DateTimeOriginal || "Not found";
+              const make = allMeta.Make || "Not found";
+              const model = allMeta.Model || "Not found";
+              const lat = EXIF.getTag(this, "GPSLatitude");
+              const lon = EXIF.getTag(this, "GPSLongitude");
+
+              let location = "Not available";
+              if (lat && lon) {
+                const toDecimal = (dms) => dms[0] + dms[1]/60 + dms[2]/3600;
+                location = `Lat: ${toDecimal(lat).toFixed(5)}, Lon: ${toDecimal(lon).toFixed(5)}`;
+              }
+
+              output.innerHTML = `
+                <p><b>📍 Location:</b> ${location}</p>
+                <p><b>📷 Camera Name:</b> ${make}</p>
+                <p><b>📱 Mobile Name:</b> ${model}</p>
+                <p><b>🕒 Time & Date:</b> ${date}</p>
+              `;
+            });
+          };
+          img.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+
+      } else if (file.type.startsWith("video/")) {
+        const video = document.createElement('video');
+        video.preload = "metadata";
+        video.onloadedmetadata = function() {
+          const duration = video.duration;
+          const date = file.lastModifiedDate || "Unknown";
+
+          output.innerHTML = `
+            <p><b>🕒 Last Modified:</b> ${date}</p>
+            <p><b>📹 Duration:</b> ${duration.toFixed(2)} seconds</p>
+            <p><i>Note: Camera info usually not available in videos.</i></p>
+          `;
+        };
+        video.src = URL.createObjectURL(file);
+      } else {
+        output.innerHTML = "<p>❌ Unsupported file type.</p>";
+      }
     });
-  </script></body>
+  </script>
+</body>
 </html>
