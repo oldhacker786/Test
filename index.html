@@ -1,107 +1,48 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html lang="en">
 <head>
-    <title>Unlimited Referral Generator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 {
-            color: #333;
-            text-align: center;
-        }
-        input, button {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        button {
-            background-color: #0088cc;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #006699;
-        }
-        #result {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #e9f7fe;
-            border-radius: 5px;
-            display: none;
-        }
-        .log-entry {
-            margin: 5px 0;
-            padding: 5px;
-            border-bottom: 1px solid #eee;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Image Metadata Extractor</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/exif-js/2.3.0/exif.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+    }
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+      margin: auto;
+    }
+    input[type="file"] {
+      margin-bottom: 20px;
+    }
+    pre {
+      background-color: #eee;
+      padding: 10px;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>Unlimited Referral Generator</h1>
-        
-        <label for="botLink">ENTER YOUR BOT REFER LINK:</label>
-        <input type="text" id="botLink" placeholder="https://t.me/yourbot?start=ref123">
-        
-        <label for="referAmount">ENTER AMOUNT OF REFER:</label>
-        <input type="number" id="referAmount" placeholder="100">
-        
-        <button onclick="generateRefers()">GENERATE REFERRALS</button>
-        
-        <div id="result">
-            <h3>Generating Referrals:</h3>
-            <div id="log"></div>
-        </div>
-    </div>
+  <div class="container">
+    <h2>📸 Image Metadata Extractor</h2>
+    <input type="file" id="fileInput" accept="image/*">
+    <pre id="output">Select an image to view its metadata...</pre>
+  </div>  <script>
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
 
-    <script>
-        function generateRefers() {
-            const botLink = document.getElementById('botLink').value;
-            const referAmount = parseInt(document.getElementById('referAmount').value);
-            
-            if (!botLink || !referAmount) {
-                alert("Please enter both bot link and referral amount");
-                return;
-            }
-            
-            document.getElementById('result').style.display = 'block';
-            const log = document.getElementById('log');
-            log.innerHTML = '';
-            
-            // Simulate fake referrals
-            let count = 0;
-            const interval = setInterval(() => {
-                count++;
-                const logEntry = document.createElement('div');
-                logEntry.className = 'log-entry';
-                logEntry.textContent = `✅ Generated fake referral #${count}`;
-                log.appendChild(logEntry);
-                log.scrollTop = log.scrollHeight;
-                
-                if (count >= referAmount) {
-                    clearInterval(interval);
-                    const finalEntry = document.createElement('div');
-                    finalEntry.className = 'log-entry';
-                    finalEntry.style.fontWeight = 'bold';
-                    finalEntry.textContent = `🎉 Success! ${referAmount} fake referrals sent to your bot`;
-                    log.appendChild(finalEntry);
-                }
-            }, 300); // Speed of generation (300ms per referral)
-        }
-    </script>
-</body>
+      EXIF.getData(file, function() {
+        const allMetaData = EXIF.getAllTags(this);
+        document.getElementById('output').textContent = JSON.stringify(allMetaData, null, 2);
+      });
+    });
+  </script></body>
 </html>
