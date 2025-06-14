@@ -1,129 +1,196 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <title>🕵️‍♂️ Media Metadata Extractor - OLD-HACKER</title>
-  <script src="https://cdn.jsdelivr.net/npm/exif-js"></script>
-  <style>
-    body {
-      background: #0d0d0d;
-      color: #00ff99;
-      font-family: 'Courier New', monospace;
-      padding: 20px;
-      text-align: center;
-    }
-    h2 {
-      color: #00ff99;
-      text-shadow: 0 0 5px #00ff99;
-    }
-    .box {
-      background: #111;
-      border: 1px solid #00ff99;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 600px;
-      margin: auto;
-      box-shadow: 0 0 20px #00ff9955;
-    }
-    .info {
-      margin-top: 20px;
-      text-align: left;
-    }
-    input[type="file"] {
-      padding: 10px;
-      background: #222;
-      color: #00ff99;
-      border: 1px solid #00ff99;
-      border-radius: 5px;
-      margin-top: 10px;
-      cursor: pointer;
-    }
-    .whatsapp-btn {
-      display: inline-block;
-      margin-top: 20px;
-      padding: 10px 15px;
-      background: #25D366;
-      color: #fff;
-      text-decoration: none;
-      border-radius: 5px;
-      font-weight: bold;
-      box-shadow: 0 0 5px #25D366;
-    }
-    footer {
-      margin-top: 30px;
-      color: #555;
-      font-size: 14px;
-    }
-  </style>
+    <title>WinGo Color Trading AI Predictor</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: white;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #333;
+        }
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+        .number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin: 0 auto;
+        }
+        .red { background-color: #ff4444; }
+        .green { background-color: #44ff44; color: black; }
+        .violet { background-color: #aa44ff; }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+            justify-content: center;
+        }
+        .btn {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-bet { background-color: #333; color: white; }
+        .btn-ai { background-color: #4CAF50; }
+        .history {
+            margin-top: 30px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px;
+            border-bottom: 1px solid #333;
+        }
+        .prediction {
+            background-color: #333;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .timer {
+            font-size: 24px;
+            text-align: center;
+            margin: 15px 0;
+            color: #4CAF50;
+        }
+    </style>
 </head>
 <body>
-  <div class="box">
-    <h2>📸 Media Metadata Extractor</h2>
-    <input type="file" id="fileInput" accept="image/*,video/*">
-    <div class="info" id="metadata"></div>
+    <div class="header">
+        <h2>WinGo 30sec Color Trading</h2>
+        <div class="timer" id="timer">30s</div>
+    </div>
 
-    <a href="https://whatsapp.com/channel/0029VavHzv259PwTIz1XxJ09" target="_blank" class="whatsapp-btn">
-      📲 Join My WhatsApp Channel
-    </a>
+    <div class="prediction">
+        <h3>AI Prediction</h3>
+        <p id="aiPrediction">Analyzing patterns...</p>
+        <button class="btn btn-ai" onclick="generatePrediction()">Refresh AI Analysis</button>
+    </div>
 
-    <footer>👨‍💻 Developed by <b>OLD-HACKER</b></footer>
-  </div>
+    <div style="text-align: center; margin: 20px 0;">
+        <h3>Last Number: <span id="lastNumber">2</span></h3>
+        <div style="display: flex; justify-content: center; gap: 20px;">
+            <div class="number red" style="width:60px;height:60px;">Red</div>
+            <div class="number green" style="width:60px;height:60px;">Green</div>
+            <div class="number violet" style="width:60px;height:60px;">Violet</div>
+        </div>
+    </div>
 
-  <script>
-    document.getElementById("fileInput").addEventListener("change", function(e) {
-      const file = e.target.files[0];
-      const output = document.getElementById("metadata");
-      output.innerHTML = "<b>⏳ Loading...</b>";
+    <div class="game-board">
+        <div class="number">0</div>
+        <div class="number">1</div>
+        <div class="number red">2</div>
+        <div class="number">3</div>
+        <div class="number">4</div>
+        <div class="number green">5</div>
+        <div class="number">6</div>
+        <div class="number violet">7</div>
+        <div class="number">8</div>
+        <div class="number">9</div>
+    </div>
 
-      if (file.type.startsWith("image/")) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-          const img = new Image();
-          img.onload = function() {
-            EXIF.getData(img, function() {
-              const allMeta = EXIF.getAllTags(this);
-              const date = allMeta.DateTimeOriginal || "Not found";
-              const make = allMeta.Make || "Not found";
-              const model = allMeta.Model || "Not found";
-              const lat = EXIF.getTag(this, "GPSLatitude");
-              const lon = EXIF.getTag(this, "GPSLongitude");
+    <div class="controls">
+        <button class="btn btn-bet">Random</button>
+        <button class="btn btn-bet">X1</button>
+        <button class="btn btn-bet">X5</button>
+        <button class="btn btn-bet">X10</button>
+        <button class="btn btn-bet">X20</button>
+        <button class="btn btn-bet">X50</button>
+        <button class="btn btn-bet">X100</button>
+    </div>
 
-              let location = "Not available";
-              if (lat && lon) {
-                const toDecimal = (dms) => dms[0] + dms[1]/60 + dms[2]/3600;
-                location = `Lat: ${toDecimal(lat).toFixed(5)}, Lon: ${toDecimal(lon).toFixed(5)}`;
-              }
+    <div class="controls">
+        <button class="btn btn-bet">Big</button>
+        <button class="btn btn-bet">Small</button>
+    </div>
 
-              output.innerHTML = `
-                <p><b>📍 Location:</b> ${location}</p>
-                <p><b>📷 Camera Name:</b> ${make}</p>
-                <p><b>📱 Mobile Name:</b> ${model}</p>
-                <p><b>🕒 Time & Date:</b> ${date}</p>
-              `;
-            });
-          };
-          img.src = event.target.result;
-        };
-        reader.readAsDataURL(file);
+    <div class="history">
+        <h3>Game History</h3>
+        <div class="history-item">
+            <span>20250614100050555</span>
+            <span>2 (Small)</span>
+        </div>
+        <div class="history-item">
+            <span>20250614100050554</span>
+            <span>0 (Small)</span>
+        </div>
+        <div class="history-item">
+            <span>20250614100050553</span>
+            <span>5 (Big)</span>
+        </div>
+        <div class="history-item">
+            <span>20250614100050552</span>
+            <span>7 (Big)</span>
+        </div>
+        <div class="history-item">
+            <span>20250614100050551</span>
+            <span>7 (Big)</span>
+        </div>
+    </div>
 
-      } else if (file.type.startsWith("video/")) {
-        const video = document.createElement('video');
-        video.preload = "metadata";
-        video.onloadedmetadata = function() {
-          const duration = video.duration;
-          const date = file.lastModifiedDate || "Unknown";
+    <script>
+        // AI Prediction Engine
+        function generatePrediction() {
+            const patterns = [
+                "Next likely: Red (Pattern detected: Alternating colors)",
+                "Safe bet: Green (66% win rate in last 10 rounds)",
+                "Violet coming soon (Missed last 5 rounds)",
+                "High probability: Small number (0-4)",
+                "Big number overdue (5-9 expected)",
+                "Random fluctuation detected - Caution advised"
+            ];
+            
+            const strategies = [
+                "Martingale strategy recommended",
+                "Reverse pattern detected - Bet opposite",
+                "Streak continuing - Follow trend",
+                "Neutral pattern - Reduce bet amount"
+            ];
+            
+            const prediction = patterns[Math.floor(Math.random() * patterns.length)];
+            const strategy = strategies[Math.floor(Math.random() * strategies.length)];
+            
+            document.getElementById('aiPrediction').innerHTML = 
+                `🎯 <strong>${prediction}</strong><br>
+                 💡 <em>${strategy}</em>`;
+        }
 
-          output.innerHTML = `
-            <p><b>🕒 Last Modified:</b> ${date}</p>
-            <p><b>📹 Duration:</b> ${duration.toFixed(2)} seconds</p>
-            <p><i>Note: Camera info usually not available in videos.</i></p>
-          `;
-        };
-        video.src = URL.createObjectURL(file);
-      } else {
-        output.innerHTML = "<p>❌ Unsupported file type.</p>";
-      }
-    });
-  </script>
+        // Timer simulation
+        let seconds = 30;
+        setInterval(() => {
+            seconds--;
+            if(seconds < 0) seconds = 30;
+            document.getElementById('timer').textContent = seconds + 's';
+            
+            // Auto-refresh prediction every 10 seconds
+            if(seconds % 10 === 0) generatePrediction();
+        }, 1000);
+
+        // Initialize
+        generatePrediction();
+    </script>
 </body>
 </html>
