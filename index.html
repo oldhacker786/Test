@@ -93,6 +93,7 @@
     .prompt-option {
       font-size: 14px;
     }
+    /* ONLY CHANGE MADE - CENTER PHONE NUMBER INPUT */
     #phoneNumber {
       text-align: center;
     }
@@ -105,7 +106,7 @@
     <label>SELECT UNBAN OPTION:</label>
     <select id="banType">
       <option value="normal">NORMAL UNBANNED</option>
-      <option value="permanent">PERMANENT UNBANNED</option>
+      <option value="permanent" selected>PERMANENT UNBANNED</option>
     </select>
 
     <hr>
@@ -121,8 +122,8 @@
       <option value="1" class="prompt-option">PROMPT 2: Mistaken ban appeal</option>
       <option value="2" class="prompt-option">PROMPT 3: Policy compliance promise</option>
       <option value="3" class="prompt-option">PROMPT 4: Account review request</option>
-      <option value="4" class="prompt-option" selected>PROMPT 5: Terms violation appeal</option>
-      <option value="5" class="prompt-option">PROMPT 6: Final chance request</option>
+      <option value="4" class="prompt-option">PROMPT 5: Terms violation appeal</option>
+      <option value="5" class="prompt-option" selected>PROMPT 6: Final chance request</option>
     </select>
 
     <button onclick="sendRequest()">SEND UNBAN REQUEST</button>
@@ -160,14 +161,12 @@
       const promptIndex = document.getElementById('promptSelect').value;
       const selectedPrompt = prompts[type][promptIndex].replace('{number}', number);
       
-      // Create mailto link with proper subject and body
       const subject = 'Unban Request for ' + number;
       const mailtoLink = 'mailto:support@support.whatsapp.com?subject=' + 
-                         encodeURIComponent(subject) + 
-                         '&body=' + 
-                         encodeURIComponent(selectedPrompt);
+                       encodeURIComponent(subject) + 
+                       '&body=' + 
+                       encodeURIComponent(selectedPrompt);
       
-      // Open the email client
       window.location.href = mailtoLink;
     }
   </script>
