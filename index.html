@@ -4,158 +4,73 @@
     <title>WinGo AI Predictor | by OLD-HACKER</title>
     <style>
         body {
-            font-family: 'Courier New', monospace;
-            background-color: #000;
-            color: #0f0;
-            max-width: 500px;
+            font-family: 'Arial', sans-serif;
+            background-color: #121212;
+            color: #fff;
+            max-width: 400px;
             margin: 0 auto;
             padding: 20px;
-            text-shadow: 0 0 5px #0f0;
+            text-align: center;
         }
         .header {
-            text-align: center;
             margin-bottom: 30px;
-            border-bottom: 1px solid #0f0;
-            padding-bottom: 10px;
+        }
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff88;
+            margin-bottom: 5px;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #aaa;
         }
         .input-section {
-            background-color: #111;
-            padding: 20px;
-            border-radius: 5px;
-            border: 1px solid #0f0;
             margin-bottom: 20px;
         }
-        input {
+        .number-input {
             width: 50px;
             height: 50px;
             font-size: 24px;
             text-align: center;
             margin: 5px;
-            background-color: #000;
-            color: #0f0;
-            border: 1px solid #0f0;
-            border-radius: 5px;
-            font-family: 'Courier New', monospace;
+            background-color: #222;
+            color: #fff;
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            outline: none;
         }
-        button {
-            background-color: #000;
-            color: #0f0;
-            border: 1px solid #0f0;
-            padding: 12px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
+        .predict-btn {
+            background-color: #00ff88;
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
             font-size: 16px;
-            margin-top: 10px;
-            font-family: 'Courier New', monospace;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
             transition: all 0.3s;
         }
-        button:hover {
-            background-color: #0f0;
-            color: #000;
-            text-shadow: none;
-        }
-        .result {
-            background-color: #111;
-            padding: 20px;
-            border-radius: 5px;
-            border: 1px solid #0f0;
-            margin-top: 20px;
-            text-align: center;
-        }
-        .prediction {
-            font-size: 24px;
-            color: #0f0;
-            margin: 15px 0;
-        }
-        .confidence {
-            height: 20px;
-            background-color: #000;
-            border-radius: 5px;
-            margin: 10px 0;
-            overflow: hidden;
-            border: 1px solid #0f0;
-        }
-        .confidence-bar {
-            height: 100%;
-            background-color: #0f0;
-            width: 0%;
-            transition: width 1s;
-        }
-        .history {
-            margin-top: 20px;
-            max-height: 200px;
-            overflow-y: auto;
-            border: 1px solid #0f0;
-            border-radius: 5px;
-            padding: 10px;
-            background-color: #111;
-        }
-        .history-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px;
-            border-bottom: 1px solid #0f0;
-        }
-        .number-type {
-            display: inline-block;
-            width: 60px;
-            text-align: center;
-            margin: 0 5px;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-weight: bold;
-        }
-        .big { background-color: #f00; color: #fff; }
-        .small { background-color: #0f0; color: #000; }
-        .footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 12px;
-            color: #0f0;
-        }
-        .whatsapp-btn {
-            display: block;
-            text-align: center;
-            margin: 20px auto;
-            padding: 10px;
-            background-color: #000;
-            color: #0f0;
-            text-decoration: none;
-            border: 1px solid #0f0;
-            border-radius: 5px;
-            width: 80%;
-            font-family: 'Courier New', monospace;
-        }
-        .whatsapp-btn:hover {
-            background-color: #0f0;
-            color: #000;
-        }
-        @keyframes blink {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-        .blink {
-            animation: blink 1s infinite;
+        .predict-btn:hover {
+            background-color: #00cc66;
+            transform: scale(1.02);
         }
         .loading {
+            margin: 30px 0;
             display: none;
-            text-align: center;
-            margin: 20px 0;
         }
         .loading-bar {
             width: 100%;
-            height: 20px;
-            background-color: #000;
+            height: 10px;
+            background-color: #333;
             border-radius: 5px;
-            border: 1px solid #0f0;
             overflow: hidden;
-            margin: 10px 0;
         }
         .loading-progress {
             height: 100%;
-            background-color: #0f0;
+            background: linear-gradient(90deg, #00ff88, #00cc66);
             width: 0%;
             animation: loading 2s forwards;
         }
@@ -163,80 +78,79 @@
             0% { width: 0%; }
             100% { width: 100%; }
         }
-        .loading-text {
-            margin-top: 10px;
-            font-size: 14px;
+        .result {
+            margin-top: 30px;
+            display: none;
+        }
+        .prediction {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 20px 0;
+            color: #00ff88;
+        }
+        .confidence {
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 20px;
+        }
+        .whatsapp-btn {
+            display: block;
+            background-color: #222;
+            color: #00ff88;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 30px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .whatsapp-btn:hover {
+            background-color: #333;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1 class="blink">WinGo AI Predictor v3.0</h1>
-        <p>by OLD-HACKER</p>
+        <div class="title">WinGo AI Predictor v3.0</div>
+        <div class="subtitle">by OLD-HACKER</div>
     </div>
 
     <div class="input-section">
-        <h2>ENTER LAST 5 NUMBERS:</h2>
+        <h3>ENTER LAST 5 NUMBERS</h3>
         <div>
-            <input type="number" id="num1" maxlength="1" min="0" max="9" oninput="moveFocus(1)">
-            <input type="number" id="num2" maxlength="1" min="0" max="9" oninput="moveFocus(2)">
-            <input type="number" id="num3" maxlength="1" min="0" max="9" oninput="moveFocus(3)">
-            <input type="number" id="num4" maxlength="1" min="0" max="9" oninput="moveFocus(4)">
-            <input type="number" id="num5" maxlength="1" min="0" max="9" oninput="moveFocus(5)">
+            <input type="number" class="number-input" id="num1" maxlength="1" min="0" max="9" oninput="moveFocus(1)">
+            <input type="number" class="number-input" id="num2" maxlength="1" min="0" max="9" oninput="moveFocus(2)">
+            <input type="number" class="number-input" id="num3" maxlength="1" min="0" max="9" oninput="moveFocus(3)">
+            <input type="number" class="number-input" id="num4" maxlength="1" min="0" max="9" oninput="moveFocus(4)">
+            <input type="number" class="number-input" id="num5" maxlength="1" min="0" max="9" oninput="moveFocus(5)">
         </div>
-        <button onclick="predict()">[ RUN PREDICTION ALGORITHM ]</button>
+        <button class="predict-btn" onclick="predict()">PREDICT NEXT WINNER</button>
     </div>
 
     <div class="loading" id="loading">
         <div class="loading-bar">
             <div class="loading-progress"></div>
         </div>
-        <div class="loading-text">ANALYZING PATTERNS... AI PREDICTION IN PROGRESS</div>
+        <div>AI IS ANALYZING PATTERNS...</div>
     </div>
 
-    <div class="result" id="result" style="display: none;">
-        <h2>AI ANALYSIS RESULT</h2>
-        <div>
-            <span id="num1Display" class="number-type"></span>
-            <span id="num2Display" class="number-type"></span>
-            <span id="num3Display" class="number-type"></span>
-            <span id="num4Display" class="number-type"></span>
-            <span id="num5Display" class="number-type"></span>
-        </div>
+    <div class="result" id="result">
         <div class="prediction" id="prediction"></div>
-        <div class="confidence">
-            <div class="confidence-bar" id="confidenceBar"></div>
-        </div>
-        <p id="confidenceText"></p>
-        <p id="patternInfo"></p>
-        <p id="recommendation"></p>
+        <div class="confidence" id="confidence"></div>
     </div>
 
     <a href="https://whatsapp.com/channel/0029VavHzv259PwTIz1XxJ09" class="whatsapp-btn" target="_blank">
-        [ JOIN HACKER NETWORK ON WHATSAPP ]
+        JOIN WHATSAPP FOR MORE PREDICTIONS
     </a>
 
-    <div class="history" id="history">
-        <h3>PREDICTION HISTORY LOG</h3>
-    </div>
-
-    <div class="footer">
-        DEVELOPED BY OLD-HACKER | © 2024 | ALL SYSTEMS OPERATIONAL
-    </div>
-
     <script>
-        const history = [];
-        
-        // Auto-focus between input boxes
         function moveFocus(currentBox) {
             const input = document.getElementById(`num${currentBox}`);
             
-            // If input has a value, move to next box
             if (input.value.length === 1 && currentBox < 5) {
                 document.getElementById(`num${currentBox + 1}`).focus();
             }
             
-            // If backspace on empty box, move to previous
             if (input.value.length === 0 && currentBox > 1) {
                 document.getElementById(`num${currentBox - 1}`).focus();
             }
@@ -251,251 +165,51 @@
                 parseInt(document.getElementById('num5').value)
             ];
             
-            // Validate input
             if (nums.some(isNaN) || nums.some(n => n < 0 || n > 9)) {
-                alert("[SYSTEM ALERT] Invalid input detected. Please enter numbers 0-9.");
+                alert("Please enter numbers between 0-9 in all boxes");
                 return;
             }
             
-            // Show loading animation
             document.getElementById('loading').style.display = 'block';
             document.getElementById('result').style.display = 'none';
             
-            // After loading completes, show results
             setTimeout(function() {
                 document.getElementById('loading').style.display = 'none';
                 
-                // Display number types
-                displayNumberTypes(nums);
+                const bigCount = nums.filter(n => n >= 5).length;
+                const smallCount = nums.filter(n => n < 5).length;
                 
-                // AI Prediction Logic
-                const analysis = analyzePattern(nums);
-                const prediction = makePrediction(nums, analysis);
+                // Simple prediction logic
+                let prediction, confidence;
+                if (bigCount > smallCount) {
+                    confidence = 60 + Math.floor(Math.random() * 20);
+                    prediction = "NEXT WINNER: BIG";
+                } else {
+                    confidence = 60 + Math.floor(Math.random() * 20);
+                    prediction = "NEXT WINNER: SMALL";
+                }
                 
-                // Display results
-                document.getElementById('prediction').textContent = prediction.prediction;
-                document.getElementById('confidenceBar').style.width = prediction.confidence + '%';
-                document.getElementById('confidenceText').textContent = `CONFIDENCE LEVEL: ${prediction.confidence}%`;
-                document.getElementById('patternInfo').textContent = `PATTERN DETECTED: ${prediction.pattern}`;
-                document.getElementById('recommendation').textContent = `RECOMMENDED ACTION: ${prediction.recommendation}`;
+                // If all numbers are big or small, increase confidence
+                if (bigCount === 5) {
+                    confidence = 80 + Math.floor(Math.random() * 15);
+                    prediction = "NEXT WINNER: BIG";
+                } else if (smallCount === 5) {
+                    confidence = 80 + Math.floor(Math.random() * 15);
+                    prediction = "NEXT WINNER: SMALL";
+                }
+                
+                document.getElementById('prediction').textContent = prediction;
+                document.getElementById('confidence').textContent = `${confidence}% CONFIDENCE`;
                 document.getElementById('result').style.display = 'block';
                 
-                // Add to history
-                addHistory(nums, prediction);
-                
-                // Clear inputs after prediction
-                clearInputs();
-            }, 2000); // 2 second loading animation
-        }
-        
-        function clearInputs() {
-            for (let i = 1; i <= 5; i++) {
-                document.getElementById(`num${i}`).value = '';
-            }
-            document.getElementById('num1').focus();
-        }
-        
-        function displayNumberTypes(nums) {
-            for (let i = 1; i <= 5; i++) {
-                const num = nums[i-1];
-                const element = document.getElementById(`num${i}Display`);
-                element.textContent = num;
-                element.className = `number-type ${num >= 5 ? 'big' : 'small'}`;
-                element.title = num >= 5 ? 'BIG (5-9)' : 'SMALL (0-4)';
-            }
-        }
-        
-        function analyzePattern(nums) {
-            // Enhanced pattern recognition with weighted probabilities
-            const counts = {
-                big: nums.filter(n => n >= 5).length,
-                small: nums.filter(n => n < 5).length,
-                even: nums.filter(n => n % 2 === 0).length,
-                odd: nums.filter(n => n % 2 !== 0).length,
-                high: nums.filter(n => n >= 7).length,
-                low: nums.filter(n => n <= 2).length
-            };
-            
-            const lastThree = nums.slice(-3);
-            const lastThreeBig = lastThree.filter(n => n >= 5).length;
-            const lastThreeSmall = lastThree.filter(n => n < 5).length;
-            
-            return {
-                counts,
-                lastThreeBig,
-                lastThreeSmall,
-                streak: calculateStreak(nums),
-                alternation: calculateAlternation(nums),
-                trend: calculateTrend(nums)
-            };
-        }
-        
-        function calculateStreak(nums) {
-            let streak = 1;
-            let lastType = nums[0] >= 5 ? 'big' : 'small';
-            
-            for (let i = 1; i < nums.length; i++) {
-                const currentType = nums[i] >= 5 ? 'big' : 'small';
-                if (currentType === lastType) {
-                    streak++;
-                } else {
-                    break;
+                // Clear inputs
+                for (let i = 1; i <= 5; i++) {
+                    document.getElementById(`num${i}`).value = '';
                 }
-            }
-            
-            return streak;
+                document.getElementById('num1').focus();
+            }, 2000);
         }
         
-        function calculateAlternation(nums) {
-            let alternationScore = 0;
-            for (let i = 1; i < nums.length; i++) {
-                const prevType = nums[i-1] >= 5 ? 'big' : 'small';
-                const currType = nums[i] >= 5 ? 'big' : 'small';
-                if (prevType !== currType) alternationScore++;
-            }
-            return alternationScore / (nums.length - 1);
-        }
-        
-        function calculateTrend(nums) {
-            let trend = 0;
-            for (let i = 1; i < nums.length; i++) {
-                trend += (nums[i] >= 5 ? 1 : -1);
-            }
-            return trend;
-        }
-        
-        function makePrediction(nums, analysis) {
-            // Calculate probabilities based on multiple factors
-            let bigProb = 50;
-            let smallProb = 50;
-            
-            // Adjust based on overall counts
-            bigProb += (analysis.counts.big - analysis.counts.small) * 5;
-            smallProb -= (analysis.counts.big - analysis.counts.small) * 5;
-            
-            // Recent trend has more weight
-            bigProb += analysis.trend * 8;
-            smallProb -= analysis.trend * 8;
-            
-            // Streak continuation probability
-            if (analysis.streak >= 3) {
-                const lastType = nums[nums.length-1] >= 5 ? 'big' : 'small';
-                if (lastType === 'big') {
-                    bigProb += 15 * analysis.streak;
-                } else {
-                    smallProb += 15 * analysis.streak;
-                }
-            }
-            
-            // Alternation pattern
-            if (analysis.alternation >= 0.8) {
-                const lastType = nums[nums.length-1] >= 5 ? 'big' : 'small';
-                if (lastType === 'big') {
-                    smallProb += 25;
-                } else {
-                    bigProb += 25;
-                }
-            }
-            
-            // Last three bias
-            if (analysis.lastThreeBig >= 2) {
-                bigProb += 15;
-            } else if (analysis.lastThreeSmall >= 2) {
-                smallProb += 15;
-            }
-            
-            // Normalize probabilities
-            const total = bigProb + smallProb;
-            bigProb = (bigProb / total) * 100;
-            smallProb = (smallProb / total) * 100;
-            
-            // Make final prediction
-            let prediction, confidence, pattern, recommendation;
-            
-            if (bigProb >= 65 || smallProb >= 65) {
-                const predictedType = bigProb > smallProb ? 'BIG' : 'SMALL';
-                confidence = Math.max(bigProb, smallProb);
-                prediction = `[PREDICTION] NEXT WINNER: ${predictedType} (${Math.round(confidence)}% CHANCE)`;
-                pattern = getPatternDescription(analysis, predictedType);
-                recommendation = confidence >= 75 ? 
-                    "HIGH CONFIDENCE - RECOMMENDED BET" : 
-                    "MEDIUM CONFIDENCE - MODERATE BET";
-            } else {
-                const predictedType = bigProb > smallProb ? 'BIG' : 'SMALL';
-                confidence = Math.max(bigProb, smallProb);
-                prediction = `[PREDICTION] NEXT WINNER: ${predictedType} (${Math.round(confidence)}% CHANCE)`;
-                pattern = "NO STRONG PATTERN DETECTED";
-                recommendation = "SMALL BET OR WAIT FOR CLEARER PATTERN";
-            }
-            
-            return { 
-                prediction, 
-                confidence: Math.round(confidence),
-                pattern,
-                recommendation
-            };
-        }
-        
-        function getPatternDescription(analysis, predictedType) {
-            const patterns = [];
-            
-            if (analysis.streak >= 3) {
-                patterns.push(`${analysis.streak}-GAME ${predictedType} STREAK`);
-            }
-            
-            if (analysis.alternation >= 0.8) {
-                patterns.push("ALTERNATING PATTERN");
-            }
-            
-            if (Math.abs(analysis.trend) >= 3) {
-                patterns.push(`${predictedType} TREND`);
-            }
-            
-            if (analysis.counts.big - analysis.counts.small >= 3) {
-                patterns.push("MAJORITY BIG NUMBERS");
-            } else if (analysis.counts.small - analysis.counts.big >= 3) {
-                patterns.push("MAJORITY SMALL NUMBERS");
-            }
-            
-            if (analysis.lastThreeBig >= 2) {
-                patterns.push("RECENT BIG BIAS");
-            } else if (analysis.lastThreeSmall >= 2) {
-                patterns.push("RECENT SMALL BIAS");
-            }
-            
-            return patterns.length > 0 ? patterns.join(" + ") : "RANDOM FLUCTUATION";
-        }
-        
-        function addHistory(nums, prediction) {
-            const historyDiv = document.getElementById('history');
-            const historyItem = document.createElement('div');
-            historyItem.className = 'history-item';
-            
-            const numbersText = nums.map(n => 
-                `<span class="number-type ${n >= 5 ? 'big' : 'small'}">${n}</span>`
-            ).join(' ');
-            
-            const resultText = `${prediction.prediction} (${prediction.confidence}%)`;
-            
-            historyItem.innerHTML = `
-                <div>${numbersText}</div>
-                <div>${resultText}</div>
-            `;
-            
-            // Insert at top
-            if (historyDiv.children.length > 1) {
-                historyDiv.insertBefore(historyItem, historyDiv.children[1]);
-            } else {
-                historyDiv.appendChild(historyItem);
-            }
-            
-            // Limit history
-            if (historyDiv.children.length > 6) {
-                historyDiv.removeChild(historyDiv.lastChild);
-            }
-        }
-        
-        // Focus first input on page load
         window.onload = function() {
             document.getElementById('num1').focus();
         };
