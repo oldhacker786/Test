@@ -93,6 +93,9 @@
     .prompt-option {
       font-size: 14px;
     }
+    #phoneNumber {
+      text-align: center;
+    }
   </style>
 </head>
 <body>
@@ -108,7 +111,7 @@
     <hr>
 
     <label>ENTER YOUR NUMBER</label>
-    <input type="text" id="phoneNumber" placeholder="e.g. +923001234567">
+    <input type="text" id="phoneNumber" placeholder="e.g. +923001234567" value="+923277712440">
 
     <hr>
 
@@ -118,11 +121,11 @@
       <option value="1" class="prompt-option">PROMPT 2: Mistaken ban appeal</option>
       <option value="2" class="prompt-option">PROMPT 3: Policy compliance promise</option>
       <option value="3" class="prompt-option">PROMPT 4: Account review request</option>
-      <option value="4" class="prompt-option">PROMPT 5: Terms violation appeal</option>
+      <option value="4" class="prompt-option" selected>PROMPT 5: Terms violation appeal</option>
       <option value="5" class="prompt-option">PROMPT 6: Final chance request</option>
     </select>
 
-    <button onclick="sendMail()">SEND UNBAN REQUEST</button>
+    <button onclick="sendRequest()">SEND UNBAN REQUEST</button>
 
     <div class="footer">
       <p>DEVELOPED BY OLD-HACKERS | © 2025 | ALL SYSTEMS OPERATIONAL
@@ -147,30 +150,42 @@
         "This is a request to reconsider the permanent ban on my number {number}. I assure compliance in the future.",
         "Please unban my number {number}. I take full responsibility and seek one final chance to use WhatsApp responsibly.",
         "I acknowledge mistakes on number {number}. Requesting a final opportunity and committing to policy adherence.",
-        "Dear WhatsApp Support,
-
-My number has been permanently banned, and I strongly believe this may be a mistake or an automated action. I respectfully request a detailed review of my account and activity.
-
-I always strive to follow WhatsApp's Terms of Service and community guidelines. If any issues were caused unintentionally, I assure you it was not with malicious intent, and I am ready to correct any mistakes.
-
-Please consider reinstating my number. I truly rely on WhatsApp for personal and professional communication. Your assistance would mean a lot.
-
-Phone Number: {number}.
-
-Thank you for your time and understanding.
-
-Best regards.."
+        "Dear WhatsApp Support,\n\nMy number has been permanently banned, and I strongly believe this may be a mistake or an automated action. I respectfully request a detailed review of my account and activity.\n\nI always strive to follow WhatsApp's Terms of Service and community guidelines. If any issues were caused unintentionally, I assure you it was not with malicious intent, and I am ready to correct any mistakes.\n\nPlease consider reinstating my number. I truly rely on WhatsApp for personal and professional communication. Your assistance would mean a lot.\n\nPhone Number: {number}.\n\nThank you for your time and understanding.\n\nBest regards."
       ]
     };
 
-    function sendMail() {
+    function sendRequest() {
       const number = document.getElementById('phoneNumber').value;
       const type = document.getElementById('banType').value;
       const promptIndex = document.getElementById('promptSelect').value;
       const selectedPrompt = prompts[type][promptIndex].replace('{number}', number);
       
-      const mailtoLink = `mailto:support@support.whatsapp.com?subject=Unban Request&body=${encodeURIComponent(selectedPrompt)}`;
-      window.location.href = mailtoLink;
+      // Create a form to submit the data
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = 'mailto:support@support.whatsapp.com';
+      form.enctype = 'text/plain';
+      
+      // Add subject field
+      const subjectInput = document.createElement('input');
+      subjectInput.type = 'hidden';
+      subjectInput.name = 'subject';
+      subjectInput.value = 'Unban Request';
+      form.appendChild(subjectInput);
+      
+      // Add body field
+      const bodyInput = document.createElement('input');
+      bodyInput.type = 'hidden';
+      bodyInput.name = 'body';
+      bodyInput.value = selectedPrompt;
+      form.appendChild(bodyInput);
+      
+      // Append form to body and submit
+      document.body.appendChild(form);
+      form.submit();
+      
+      // Remove the form after submission
+      document.body.removeChild(form);
     }
   </script>
 </body>
