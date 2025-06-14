@@ -1,128 +1,120 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>WhatsApp Unban Tool</title>
   <style>
     body {
-      margin: 0;
-      font-family: 'Courier New', monospace;
-      background: black url('https://i.ibb.co/gmF7YmJ/matrix-bg.gif') repeat;
+      background: black url('https://i.ibb.co/FzZ5b1M/matrix-bg.gif') repeat;
       color: #00ff00;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      font-family: monospace;
+      padding: 20px;
+    }
+    .glow {
+      border: 2px solid #00ff00;
+      box-shadow: 0 0 10px #00ff00;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      border-radius: 10px;
+    }
+    select, input, button, textarea {
+      background: black;
+      color: #00ff00;
+      border: 1px solid #00ff00;
+      margin-top: 10px;
+      width: 100%;
+      padding: 10px;
+    }
+    .typing {
       overflow: hidden;
-    }
-    h1::after {
-      content: '|';
-      animation: blink 1s infinite;
-    }
-    @keyframes blink {
-      0%, 50% { opacity: 1; }
-      51%, 100% { opacity: 0; }
-    }
-    h1 {
-      font-size: 2rem;
       white-space: nowrap;
-      overflow: hidden;
       border-right: .15em solid #00ff00;
-      width: 0;
-      animation: typing 4s steps(40, end) forwards;
+      animation: typing 3s steps(40, end), blink-caret .75s step-end infinite;
     }
     @keyframes typing {
       from { width: 0 }
       to { width: 100% }
     }
-    select, input, button {
-      background-color: black;
-      border: 1px solid #00ff00;
-      color: #00ff00;
-      padding: 10px;
-      margin: 10px;
-      width: 300px;
-      text-align: center;
-      box-shadow: 0 0 10px #00ff00;
-    }
-    button:hover {
-      cursor: pointer;
-      box-shadow: 0 0 20px #00ff00;
-    }
-    textarea {
-      background-color: black;
-      border: 1px solid #00ff00;
-      color: #00ff00;
-      padding: 10px;
-      width: 90%;
-      height: 100px;
-      margin-top: 20px;
-      box-shadow: 0 0 10px #00ff00;
-    }
-    a {
-      color: #00ff00;
-      margin-top: 10px;
+    @keyframes blink-caret {
+      from, to { border-color: transparent }
+      50% { border-color: #00ff00 }
     }
   </style>
 </head>
 <body>
-  <h1>WHATSAPP UNBAN TOOL</h1>
-  <select id="banType">
-    <option value="normal">Normal Ban Unban</option>
-    <option value="permanent">Permanent Ban Unban</option>
-  </select>
-  <select id="promptType">
-    <option>Select Prompt</option>
-  </select>
-  <input type="text" id="number" placeholder="Enter your banned number" />
-  <button onclick="sendMail(); playBeep()">Send to WhatsApp Support</button>
-  <textarea id="output" readonly></textarea>
-  <a href="https://whatsapp.com/channel/0029VavHzv259PwTIz1XxJ09" target="_blank">📲 Join WhatsApp Channel</a>
-  <br>
-  <p>👨‍💻 Developed by OLD-HACKER</p><audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3"></audio>
+  <div class="glow">
+    <h1 class="typing">📡 WhatsApp Unban Request Tool</h1><label>Choose Ban Type:</label>
+<select id="banType">
+  <option value="normal">Normal Ban</option>
+  <option value="permanent">Permanent Ban</option>
+</select>
 
-  <script>
+<label>Your Banned WhatsApp Number:</label>
+<input type="text" id="number" placeholder="e.g. +923001234567">
+
+<label>Choose Unban Reason:</label>
+<select id="promptSelect"></select>
+
+<button onclick="generateEmail()">📩 Generate Unban Email</button>
+
+<h3>Email Preview:</h3>
+<textarea id="emailBody" rows="10"></textarea>
+
+<br><br>
+<a href="https://whatsapp.com/channel/0029VavHzv259PwTIz1XxJ09" target="_blank">
+  📢 Join Our WhatsApp Channel
+</a>
+<br><br>
+<footer>👨‍💻 Developed by OLD-HACKER</footer>
+
+  </div>  <script>
     const normalPrompts = [
-      "Hello WhatsApp team, my number {{number}} was banned. I believe this was a mistake. Please review and restore it.",
-      "Dear WhatsApp support, I didn’t violate any policies. Kindly review and unban my number {{number}}.",
-      "Hi, I got banned recently. My number is {{number}}. I request you to check again."
-    ];
-    const permPrompts = [
-      "My number {{number}} was permanently banned. I believe this was done in error. Kindly look into this urgently.",
-      "I request a re-evaluation of my number {{number}}, it was permanently banned. Please verify again.",
-      "Hello, please help! My number {{number}} is permanently banned. I appeal for manual review."
+      "Hello WhatsApp team, my account was banned mistakenly. Kindly review and restore it.",
+      "Hi, my WhatsApp number was banned. I believe this was an error. Please check and unban it.",
+      "My account was restricted without warning. Kindly look into this issue.",
+      "I’ve always followed the terms. I think this is a mistake. Please review my ban.",
+      "Dear WhatsApp, my number is banned. I’m not sure why. Kindly investigate and restore it.",
+      "I suspect automated filters caused the ban. Please verify manually. Thank you.",
+      "Please unban my number. I didn’t violate any rules knowingly.",
+      "I use this number for daily communication. Kindly lift the ban."
     ];
 
-    document.getElementById('banType').addEventListener('change', function () {
-      const promptType = document.getElementById('promptType');
-      promptType.innerHTML = '';
-      const options = this.value === 'permanent' ? permPrompts : normalPrompts;
-      options.forEach((text, i) => {
+    const permanentPrompts = [
+      "I understand the seriousness of a permanent ban. Please give me a second chance and restore my number.",
+      "Dear WhatsApp team, I believe my number was banned permanently by mistake. Kindly reconsider.",
+      "I acknowledge any violations and promise to follow guidelines strictly moving forward. Kindly unban me.",
+      "Please treat this as a sincere appeal. I’ve corrected my behavior and request reactivation.",
+      "I’ve read and understood the terms. Please lift the permanent restriction.",
+      "Kindly provide clarity on my permanent ban. I wish to fix the issue and restore access.",
+      "This is my primary number and I’d be grateful for reinstatement.",
+      "I assure compliance in the future. Please reconsider the permanent ban."
+    ];
+
+    const emailInput = document.getElementById('emailBody');
+    const promptSelect = document.getElementById('promptSelect');
+
+    function populatePrompts(type) {
+      promptSelect.innerHTML = "";
+      const prompts = type === 'permanent' ? permanentPrompts : normalPrompts;
+      prompts.forEach((text, i) => {
         const opt = document.createElement('option');
-        opt.value = i;
-        opt.innerText = text.substring(0, 30) + '...';
-        promptType.appendChild(opt);
+        opt.value = text;
+        opt.innerText = `Prompt ${i+1}`;
+        promptSelect.appendChild(opt);
       });
+    }
+
+    document.getElementById('banType').addEventListener('change', e => {
+      populatePrompts(e.target.value);
     });
 
-    function sendMail() {
+    function generateEmail() {
       const number = document.getElementById('number').value;
-      const type = document.getElementById('banType').value;
-      const index = document.getElementById('promptType').value;
-      const prompts = type === 'permanent' ? permPrompts : normalPrompts;
-      if (index === 'Select Prompt' || number.trim() === '') {
-        alert("Please enter number and choose a prompt.");
-        return;
-      }
-      const filled = prompts[index].replace("{{number}}", number);
-      const mail = `mailto:support@support.whatsapp.com?subject=Ban Appeal&body=${encodeURIComponent(filled)}`;
-      document.getElementById('output').value = filled;
-      window.open(mail, '_blank');
+      const body = promptSelect.value;
+      emailInput.value = `To: support@support.whatsapp.com\nSubject: WhatsApp Ban Appeal\n\nNumber: ${number}\n\n${body}`;
     }
 
-    function playBeep() {
-      document.getElementById("clickSound").play();
-    }
+    // Initialize with normal prompts
+    populatePrompts('normal');
   </script></body>
 </html>
