@@ -143,7 +143,7 @@
 </head>
 <body>
     <div class="header">
-        <h1 class="blink">WinGo AI Predictor v2.0</h1>
+        <h1 class="blink">WinGo AI Predictor v3.0</h1>
         <p>by OLD-HACKER</p>
     </div>
 
@@ -239,6 +239,16 @@
             
             // Add to history
             addHistory(nums, prediction);
+            
+            // Clear inputs after prediction
+            clearInputs();
+        }
+        
+        function clearInputs() {
+            for (let i = 1; i <= 5; i++) {
+                document.getElementById(`num${i}`).value = '';
+            }
+            document.getElementById('num1').focus();
         }
         
         function displayNumberTypes(nums) {
@@ -252,91 +262,164 @@
         }
         
         function analyzePattern(nums) {
-            const analysis = {
-                bigCount: nums.filter(n => n >= 5).length,
-                smallCount: nums.filter(n => n < 5).length,
-                streak: 1,
-                isAlternating: true,
-                recentTrend: 0
+            // Enhanced pattern recognition with weighted probabilities
+            const counts = {
+                big: nums.filter(n => n >= 5).length,
+                small: nums.filter(n => n < 5).length,
+                even: nums.filter(n => n % 2 === 0).length,
+                odd: nums.filter(n => n % 2 !== 0).length,
+                high: nums.filter(n => n >= 7).length,
+                low: nums.filter(n => n <= 2).length
             };
             
-            // Check streaks, alternation and trends
-            let lastType = nums[0] >= 5 ? 'BIG' : 'SMALL';
+            const lastThree = nums.slice(-3);
+            const lastThreeBig = lastThree.filter(n => n >= 5).length;
+            const lastThreeSmall = lastThree.filter(n => n < 5).length;
+            
+            return {
+                counts,
+                lastThreeBig,
+                lastThreeSmall,
+                streak: calculateStreak(nums),
+                alternation: calculateAlternation(nums),
+                trend: calculateTrend(nums)
+            };
+        }
+        
+        function calculateStreak(nums) {
+            let streak = 1;
+            let lastType = nums[0] >= 5 ? 'big' : 'small';
+            
             for (let i = 1; i < nums.length; i++) {
-                const currentType = nums[i] >= 5 ? 'BIG' : 'SMALL';
-                
-                // Streak check
+                const currentType = nums[i] >= 5 ? 'big' : 'small';
                 if (currentType === lastType) {
-                    analysis.streak++;
+                    streak++;
                 } else {
-                    analysis.streak = 1;
+                    break;
                 }
-                
-                // Alternation check
-                if (i > 0 && currentType === (nums[i-1] >= 5 ? 'BIG' : 'SMALL')) {
-                    analysis.isAlternating = false;
-                }
-                
-                // Trend calculation
-                if (currentType === 'BIG') analysis.recentTrend++;
-                else analysis.recentTrend--;
-                
-                lastType = currentType;
             }
             
-            return analysis;
+            return streak;
+        }
+        
+        function calculateAlternation(nums) {
+            let alternationScore = 0;
+            for (let i = 1; i < nums.length; i++) {
+                const prevType = nums[i-1] >= 5 ? 'big' : 'small';
+                const currType = nums[i] >= 5 ? 'big' : 'small';
+                if (prevType !== currType) alternationScore++;
+            }
+            return alternationScore / (nums.length - 1);
+        }
+        
+        function calculateTrend(nums) {
+            let trend = 0;
+            for (let i = 1; i < nums.length; i++) {
+                trend += (nums[i] >= 5 ? 1 : -1);
+            }
+            return trend;
         }
         
         function makePrediction(nums, analysis) {
-            const lastNum = nums[nums.length-1];
+            // Calculate probabilities based on multiple factors
+            let bigProb = 50;
+            let smallProb = 50;
+            
+            // Adjust based on overall counts
+            bigProb += (analysis.counts.big - analysis.counts.small) * 5;
+            smallProb -= (analysis.counts.big - analysis.counts.small) * 5;
+            
+            // Recent trend has more weight
+            bigProb += analysis.trend * 8;
+            smallProb -= analysis.trend * 8;
+            
+            // Streak continuation probability
+            if (analysis.streak >= 3) {
+                const lastType = nums[nums.length-1] >= 5 ? 'big' : 'small';
+                if (lastType === 'big') {
+                    bigProb += 15 * analysis.streak;
+                } else {
+                    smallProb += 15 * analysis.streak;
+                }
+            }
+            
+            // Alternation pattern
+            if (analysis.alternation >= 0.8) {
+                const lastType = nums[nums.length-1] >= 5 ? 'big' : 'small';
+                if (lastType === 'big') {
+                    smallProb += 25;
+                } else {
+                    bigProb += 25;
+                }
+            }
+            
+            // Last three bias
+            if (analysis.lastThreeBig >= 2) {
+                bigProb += 15;
+            } else if (analysis.lastThreeSmall >= 2) {
+                smallProb += 15;
+            }
+            
+            // Normalize probabilities
+            const total = bigProb + smallProb;
+            bigProb = (bigProb / total) * 100;
+            smallProb = (smallProb / total) * 100;
+            
+            // Make final prediction
             let prediction, confidence, pattern, recommendation;
             
-            // Pattern 1: Strong streak (4-5 same type)
-            if (analysis.streak >= 4) {
-                const continuingType = lastNum >= 5 ? 'BIG' : 'SMALL';
-                prediction = `[PREDICTION] NEXT: ${continuingType} (STRONG STREAK)`;
-                confidence = Math.min(95, 75 + (analysis.streak * 5));
-                pattern = `STREAK OF ${analysis.streak} ${continuingType} NUMBERS`;
-                recommendation = "INITIATE MEDIUM BET PROTOCOL";
-            }
-            // Pattern 2: Perfect alternation
-            else if (analysis.isAlternating) {
-                const nextType = lastNum >= 5 ? 'SMALL' : 'BIG';
-                prediction = `[PREDICTION] NEXT: ${nextType} (ALTERNATING PATTERN)`;
-                confidence = 80;
-                pattern = "CLEAR ALTERNATION BETWEEN BIG/SMALL";
-                recommendation = "ENGAGE OPPOSITE BET STRATEGY";
-            }
-            // Pattern 3: Strong majority (4-1 or 5-0)
-            else if (Math.abs(analysis.bigCount - analysis.smallCount) >= 3) {
-                const majorityType = analysis.bigCount > analysis.smallCount ? 'BIG' : 'SMALL';
-                prediction = `[PREDICTION] NEXT: ${majorityType} (DOMINANT PATTERN)`;
-                confidence = 70;
-                pattern = `${majorityType} NUMBERS DOMINATING (${analysis.bigCount}-${analysis.smallCount})`;
-                recommendation = "FOLLOW MAJORITY TREND";
-            }
-            // Pattern 4: Recent trend
-            else if (Math.abs(analysis.recentTrend) >= 3) {
-                const trendingType = analysis.recentTrend > 0 ? 'BIG' : 'SMALL';
-                prediction = `[PREDICTION] NEXT: ${trendingType} (TREND DETECTED)`;
-                confidence = 65;
-                pattern = `RECENT ${trendingType} TREND (${analysis.recentTrend > 0 ? '+' : ''}${analysis.recentTrend})`;
-                recommendation = "SMALL BET RECOMMENDED";
-            }
-            // Default: Balanced prediction
-            else {
-                const bias = analysis.bigCount > analysis.smallCount ? 'BIG' : 'SMALL';
-                prediction = `[PREDICTION] SLIGHT BIAS: ${bias} (RANDOM FLUCTUATION)`;
-                confidence = 60;
+            if (bigProb >= 65 || smallProb >= 65) {
+                const predictedType = bigProb > smallProb ? 'BIG' : 'SMALL';
+                confidence = Math.max(bigProb, smallProb);
+                prediction = `[PREDICTION] NEXT: ${predictedType} (STRONG SIGNAL)`;
+                pattern = getPatternDescription(analysis, predictedType);
+                recommendation = confidence >= 75 ? 
+                    "HIGH CONFIDENCE - RECOMMENDED BET" : 
+                    "MEDIUM CONFIDENCE - MODERATE BET";
+            } else {
+                const predictedType = bigProb > smallProb ? 'BIG' : 'SMALL';
+                confidence = Math.max(bigProb, smallProb);
+                prediction = `[PREDICTION] SLIGHT EDGE: ${predictedType}`;
                 pattern = "NO STRONG PATTERN DETECTED";
-                recommendation = "MINIMAL BET OR STAND BY";
+                recommendation = "SMALL BET OR WAIT FOR CLEARER PATTERN";
             }
             
-            // Add random variation to confidence (±3%)
-            confidence += (Math.random() * 6 - 3);
-            confidence = Math.max(55, Math.min(97, Math.round(confidence)));
+            return { 
+                prediction, 
+                confidence: Math.round(confidence),
+                pattern,
+                recommendation
+            };
+        }
+        
+        function getPatternDescription(analysis, predictedType) {
+            const patterns = [];
             
-            return { prediction, confidence, pattern, recommendation };
+            if (analysis.streak >= 3) {
+                patterns.push(`${analysis.streak}-GAME ${predictedType} STREAK`);
+            }
+            
+            if (analysis.alternation >= 0.8) {
+                patterns.push("ALTERNATING PATTERN");
+            }
+            
+            if (Math.abs(analysis.trend) >= 3) {
+                patterns.push(`${predictedType} TREND`);
+            }
+            
+            if (analysis.counts.big - analysis.counts.small >= 3) {
+                patterns.push("MAJORITY BIG NUMBERS");
+            } else if (analysis.counts.small - analysis.counts.big >= 3) {
+                patterns.push("MAJORITY SMALL NUMBERS");
+            }
+            
+            if (analysis.lastThreeBig >= 2) {
+                patterns.push("RECENT BIG BIAS");
+            } else if (analysis.lastThreeSmall >= 2) {
+                patterns.push("RECENT SMALL BIAS");
+            }
+            
+            return patterns.length > 0 ? patterns.join(" + ") : "RANDOM FLUCTUATION";
         }
         
         function addHistory(nums, prediction) {
