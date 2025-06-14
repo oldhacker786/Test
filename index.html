@@ -10,81 +10,59 @@
       font-family: 'Courier New', monospace;
       color: #00ff00;
       background: #000;
-      overflow: hidden;
-    }
-    .matrix {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      opacity: 0.8;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
     .container {
-      padding: 20px;
-      max-width: 600px;
-      margin: 0 auto;
-      background: rgba(0, 0, 0, 0.7);
+      width: 100%;
+      max-width: 500px;
+      padding: 25px;
+      background: #111;
       border: 1px solid #00ff00;
-      box-shadow: 0 0 20px #00ff00;
-      margin-top: 50px;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
     }
     h1 {
-      font-size: 2em;
+      font-size: 24px;
       text-align: center;
-      text-shadow: 0 0 10px #00ff00;
-      margin-bottom: 30px;
-      position: relative;
-    }
-    h1::after {
-      content: "";
-      display: block;
-      width: 100%;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, #00ff00, transparent);
-      margin-top: 10px;
+      margin-bottom: 25px;
+      color: #00ff00;
+      text-shadow: 0 0 5px #00ff00;
     }
     label {
       display: block;
-      margin-top: 20px;
+      margin: 20px 0 8px;
       color: #00ff00;
-      text-shadow: 0 0 5px #00ff00;
       font-weight: bold;
     }
-    select, textarea, input {
-      display: block;
+    select, input {
       width: 100%;
-      margin-top: 10px;
-      background-color: rgba(0, 0, 0, 0.8);
+      padding: 12px;
+      margin-bottom: 15px;
+      background: #000;
       color: #00ff00;
       border: 1px solid #00ff00;
-      padding: 12px;
       font-family: 'Courier New', monospace;
       font-size: 16px;
-      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
     }
     button {
-      display: block;
       width: 100%;
-      margin-top: 30px;
-      background-color: #003300;
+      padding: 15px;
+      margin-top: 25px;
+      background: #003300;
       color: #00ff00;
       border: 1px solid #00ff00;
-      padding: 15px;
       font-family: 'Courier New', monospace;
       font-size: 18px;
       font-weight: bold;
       cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 2px;
       transition: all 0.3s;
-      box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
     }
     button:hover {
-      background-color: #00ff00;
+      background: #00ff00;
       color: #000;
-      box-shadow: 0 0 20px #00ff00;
     }
     .footer {
       margin-top: 30px;
@@ -94,50 +72,60 @@
     }
     .whatsapp-link {
       display: inline-block;
-      color: #00ff00;
       margin-top: 15px;
+      padding: 8px 15px;
+      color: #00ff00;
       text-decoration: none;
       border: 1px solid #00ff00;
-      padding: 8px 15px;
       transition: all 0.3s;
     }
     .whatsapp-link:hover {
-      background-color: #00ff00;
+      background: #00ff00;
       color: #000;
     }
-    .glitch {
-      animation: glitch 1s linear infinite;
+    hr {
+      border: 0;
+      height: 1px;
+      background: #00ff00;
+      margin: 20px 0;
+      opacity: 0.3;
     }
-    @keyframes glitch {
-      0% { text-shadow: 0 0 5px #00ff00; }
-      25% { text-shadow: -2px 0 5px #ff0000; }
-      50% { text-shadow: 2px 0 5px #0000ff; }
-      75% { text-shadow: -2px 0 5px #ff00ff; }
-      100% { text-shadow: 0 0 5px #00ff00; }
+    .prompt-option {
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <canvas class="matrix"></canvas>
   <div class="container">
-    <h1 class="glitch">WHATSAPP UNBAN TOOL</h1>
+    <h1>WHATSAPP UNBAN TOOL</h1>
     
-    <label for="banType">SELECT UNBAN OPTION:</label>
+    <label>SELECT UNBAN OPTION:</label>
     <select id="banType">
       <option value="normal">NORMAL BAN NUMBER UNBANNED</option>
       <option value="permanent">PERMANENT BAN NUMBER UNBANNED</option>
     </select>
 
-    <label for="phoneNumber">ENTER YOUR NUMBER WITH +92:</label>
-    <input type="text" id="phoneNumber" placeholder="e.g. +923001234567" />
+    <hr>
 
-    <label for="promptSelect">SELECT PROMPT:</label>
-    <select id="promptSelect"></select>
+    <label>ENTER YOUR NUMBER WITH +92:</label>
+    <input type="text" id="phoneNumber" placeholder="e.g. +923001234567">
+
+    <hr>
+
+    <label>SELECT PROMPT:</label>
+    <select id="promptSelect">
+      <option value="0" class="prompt-option">PROMPT 1: Standard unban request</option>
+      <option value="1" class="prompt-option">PROMPT 2: Mistaken ban appeal</option>
+      <option value="2" class="prompt-option">PROMPT 3: Policy compliance promise</option>
+      <option value="3" class="prompt-option">PROMPT 4: Account review request</option>
+      <option value="4" class="prompt-option">PROMPT 5: Terms violation appeal</option>
+      <option value="5" class="prompt-option">PROMPT 6: Final chance request</option>
+    </select>
 
     <button onclick="sendMail()">SEND UNBAN REQUEST</button>
 
     <div class="footer">
-      <p>DEVELOPED BY OLD-HACKER | BLOOD-HACK v3.1.4</p>
+      <p>DEVELOPED BY OLD-HACKERS | BLOOD-HACK v3.1.4</p>
       <a class="whatsapp-link" href="https://whatsapp.com/channel/0029VavHzv259PwTIz1XxJ09" target="_blank">JOIN OUR WHATSAPP CHANNEL</a>
     </div>
   </div>
@@ -162,77 +150,15 @@
       ]
     };
 
-    const banTypeEl = document.getElementById('banType');
-    const promptSelectEl = document.getElementById('promptSelect');
-
-    function updatePromptOptions() {
-      const type = banTypeEl.value;
-      promptSelectEl.innerHTML = '';
-      prompts[type].forEach((prompt, index) => {
-        const option = document.createElement('option');
-        option.value = index;
-        option.textContent = prompt.replace('{number}', '[YOUR NUMBER]');
-        promptSelectEl.appendChild(option);
-      });
-    }
-
     function sendMail() {
       const number = document.getElementById('phoneNumber').value;
-      const type = banTypeEl.value;
-      const selectedPrompt = prompts[type][promptSelectEl.value].replace('{number}', number);
+      const type = document.getElementById('banType').value;
+      const promptIndex = document.getElementById('promptSelect').value;
+      const selectedPrompt = prompts[type][promptIndex].replace('{number}', number);
+      
       const mailtoLink = `mailto:support@support.whatsapp.com?subject=Unban Request&body=${encodeURIComponent(selectedPrompt)}`;
       window.location.href = mailtoLink;
     }
-
-    banTypeEl.addEventListener('change', updatePromptOptions);
-    window.onload = updatePromptOptions;
-
-    // Enhanced Matrix animation
-    const canvas = document.querySelector(".matrix");
-    const ctx = canvas.getContext("2d");
-    canvas.height = window.innerHeight;
-    canvas.width = window.innerWidth;
-    
-    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
-    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const nums = '0123456789';
-    const symbols = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
-    const alphabet = katakana + latin + nums + symbols;
-    
-    const fontSize = 16;
-    const columns = canvas.width / fontSize;
-    const rainDrops = Array(columns).fill(1);
-
-    function draw() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      ctx.fillStyle = '#0f0';
-      ctx.font = fontSize + 'px monospace';
-      
-      for(let i = 0; i < rainDrops.length; i++) {
-        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
-        ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
-        
-        if(rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-          rainDrops[i] = 0;
-        }
-        rainDrops[i]++;
-      }
-    }
-    
-    setInterval(draw, 30);
-    
-    // Glitch effect for the container
-    setInterval(() => {
-      const container = document.querySelector('.container');
-      if(Math.random() > 0.9) {
-        container.style.boxShadow = '0 0 30px #ff0000';
-        setTimeout(() => {
-          container.style.boxShadow = '0 0 20px #00ff00';
-        }, 100);
-      }
-    }, 500);
   </script>
 </body>
 </html>
