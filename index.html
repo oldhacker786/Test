@@ -1,120 +1,173 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WhatsApp Unban Request</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhatsApp Unban Request Tool</title>
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
   <style>
     body {
-      background: url('https://i.ibb.co/YhdXmn0/matrix-bg.gif') center center fixed;
-      background-size: cover;
-      font-family: 'Courier New', Courier, monospace;
-      color: #0f0;
-      padding: 20px;
+      margin: 0;
+      padding: 0;
+      font-family: 'Share Tech Mono', monospace;
+      background: black;
+      color: #00ff00;
+      overflow-x: hidden;
+    }
+    .matrix {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: black;
+      z-index: -1;
+    }
+    canvas {
+      display: block;
     }
     .container {
-      background-color: rgba(0, 0, 0, 0.85);
-      padding: 20px;
-      border-radius: 10px;
-      border: 2px solid #0f0;
-      box-shadow: 0 0 20px #0f0;
-      max-width: 500px;
+      padding: 2rem;
+      max-width: 800px;
       margin: auto;
     }
-    select, input {
+    h1 {
+      font-size: 2rem;
+      animation: typing 3s steps(30) forwards;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid #00ff00;
+    }
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+    select, textarea, input, button {
+      display: block;
       width: 100%;
-      padding: 10px;
-      background: #000;
-      color: #0f0;
-      border: 1px solid #0f0;
-      margin-bottom: 10px;
+      margin: 1rem 0;
+      padding: 0.5rem;
+      background: black;
+      color: #00ff00;
+      border: 1px solid #00ff00;
+      border-radius: 5px;
+      font-family: inherit;
     }
     button {
-      width: 100%;
-      padding: 10px;
-      background: #0f0;
-      color: #000;
-      font-weight: bold;
-      border: none;
       cursor: pointer;
-    }
-    button:hover {
-      background: #0c0;
+      font-weight: bold;
     }
     .footer {
-      margin-top: 20px;
       text-align: center;
-      color: #0f0;
-      font-size: 0.9em;
+      margin-top: 2rem;
+      font-size: 0.9rem;
     }
-    .footer a {
-      color: #0f0;
-      text-decoration: underline;
+    a {
+      color: #00ff00;
     }
   </style>
 </head>
 <body>
+  <canvas class="matrix"></canvas>
   <div class="container">
-    <h2>📡 WhatsApp Unban Request</h2>
-    <label>Choose Ban Type:</label>
-    <select id="banType" onchange="updatePrompts()">
+    <h1>📧 WhatsApp Unban Request Tool</h1>
+    <label>Ban Type:</label>
+    <select id="banType">
       <option value="normal">Normal Ban</option>
       <option value="permanent">Permanent Ban</option>
-    </select><label>Your Banned WhatsApp Number:</label>
-<input type="text" id="waNumber" placeholder="e.g. +923xxxxxxxxx" />
-
-<label>Choose Unban Reason:</label>
+    </select><label>Select Prompt:</label>
 <select id="promptSelector"></select>
 
-<button onclick="generateEmail()">📧 Send Email</button>
+<label>Your Banned Number (with country code):</label>
+<input type="text" id="numberInput" placeholder="e.g. +923001234567" />
+
+<label>Generated Email:</label>
+<textarea id="emailOutput" rows="8" readonly></textarea>
+
+<button onclick="generateEmail()">Generate Email</button>
+<button onclick="sendEmail()">Send Email</button>
 
 <div class="footer">
-  📢 <a href="https://whatsapp.com/channel/0029VaDPyJD5M2CyJYkXBl3K" target="_blank">Join Our WhatsApp Channel</a><br>
-  🤖 Developed by <strong>OLD-HACKER</strong>
+  <p>🔗 <a href="https://whatsapp.com/channel/0029VavHzv259PwTIz1XxJ09" target="_blank">Join WhatsApp Channel</a></p>
+  <p>👨‍💻 Developed by OLD-HACKER</p>
 </div>
 
   </div>  <script>
-    const prompts = {
-      normal: [
-        "Hi WhatsApp Team, my number was banned mistakenly. I haven't violated any terms. Kindly review and unban it.",
-        "Hello, please recheck my WhatsApp number. I believe it was banned in error. Awaiting your help.",
-        "My WhatsApp was blocked without warning. Kindly explain the reason and unban it if possible.",
-        "Dear Team, I respect your policies. I request a second chance and would appreciate your support.",
-        "I apologize if anything went wrong unknowingly. Please review and reactivate my number.",
-        "Please consider unbanning my number. I rely on WhatsApp daily for work and communication."
-      ],
-      permanent: [
-        "Dear WhatsApp Team, I believe my number was permanently banned in error. I’ve carefully reviewed the Terms of Service and assure compliance. Kindly lift the restriction.",
-        "Hello Team, I respect the community standards. I am requesting a review of my permanently banned number. I’m willing to cooperate fully. Please assist.",
-        "My account was banned permanently. I humbly request a second chance. I understand the rules and will strictly follow them moving forward.",
-        "Please investigate my number. I assure you I haven’t intentionally violated any terms. I need WhatsApp to stay connected with my family.",
-        "I understand that my number has been permanently banned. I’m sincerely sorry if I unknowingly caused this. Kindly unban and allow me to continue using your service.",
-        "Dear Support, I respectfully appeal for reinstatement of my banned number. I value WhatsApp deeply and request your help in reactivating it."
-      ]
-    };
+    const normalPrompts = [
+      "Hello WhatsApp Team,\nMy number {number} was banned. I believe this may have been a mistake. Please review and unban it.",
+      "Hi,\nPlease review my number {number}. I believe it was banned wrongly. Kindly look into this issue.",
+      "Dear WhatsApp,\nI think my number {number} was flagged mistakenly. Please help me recover it.",
+      "Hello,\nMy WhatsApp number {number} was banned. I use it for daily communication. Kindly help.",
+      "Greetings,\nMy number {number} is banned and I would like to know the reason. Please assist.",
+      "WhatsApp Team,\nI appeal for review of my number {number}. It may have been incorrectly banned."
+    ];
 
-    function updatePrompts() {
-      const type = document.getElementById('banType').value;
-      const selector = document.getElementById('promptSelector');
-      selector.innerHTML = '';
-      prompts[type].forEach((text, index) => {
-        const option = document.createElement('option');
-        option.value = text;
-        option.text = `Prompt ${index + 1}`;
-        selector.appendChild(option);
+    const strongPrompts = [
+      "Dear WhatsApp Support,\nI’m requesting a re-evaluation of my number {number}. This is a permanent ban, but I believe it's an error. Please review urgently.",
+      "Hi Team,\nMy number {number} was permanently banned. I rely on it for work and communication. Please look into it and unban if possible.",
+      "WhatsApp Staff,\nPlease review the permanent ban on my number {number}. I didn’t violate any terms knowingly.",
+      "Hello,\nThis is regarding the permanent ban of my number {number}. Please give it a second look and restore access.",
+      "Dear Team,\nMy number {number} is permanently banned. I request a detailed review. It's very important to me.",
+      "Hi,\nI am requesting support for unbanning my permanently banned number {number}. Please assist."
+    ];
+
+    function generateEmail() {
+      const type = document.getElementById("banType").value;
+      const promptList = type === "normal" ? normalPrompts : strongPrompts;
+      const selectedIndex = document.getElementById("promptSelector").selectedIndex;
+      const number = document.getElementById("numberInput").value;
+      const template = promptList[selectedIndex];
+      const result = template.replace("{number}", number);
+      document.getElementById("emailOutput").value = result;
+    }
+
+    function populatePrompts() {
+      const promptSelector = document.getElementById("promptSelector");
+      promptSelector.innerHTML = "";
+      const type = document.getElementById("banType").value;
+      const promptList = type === "normal" ? normalPrompts : strongPrompts;
+      promptList.forEach((prompt, i) => {
+        const opt = document.createElement("option");
+        opt.value = i;
+        opt.innerText = prompt.slice(0, 50) + "...";
+        promptSelector.appendChild(opt);
       });
     }
 
-    function generateEmail() {
-      const email = 'support@support.whatsapp.com';
-      const number = document.getElementById('waNumber').value.trim();
-      const message = document.getElementById('promptSelector').value;
-
-      const body = `Number: ${number}%0D%0A%0D%0A${encodeURIComponent(message)}`;
-      const subject = 'WhatsApp Ban Appeal';
-      const mailto = `mailto:${email}?subject=${subject}&body=${body}`;
-      window.location.href = mailto;
+    function sendEmail() {
+      const subject = encodeURIComponent("WhatsApp Unban Request");
+      const body = encodeURIComponent(document.getElementById("emailOutput").value);
+      window.location.href = `mailto:support@whatsapp.com?subject=${subject}&body=${body}`;
     }
 
-    window.onload = updatePrompts;
+    document.getElementById("banType").addEventListener("change", populatePrompts);
+    window.onload = populatePrompts;
+  </script>  <script>
+    // Matrix background effect
+    const canvas = document.querySelector("canvas");
+    const ctx = canvas.getContext("2d");
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const letters = "01";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array.from({ length: columns }).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = "#0f0";
+      ctx.font = fontSize + "px monospace";
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        if (drops[i] * fontSize > canvas.height || Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+        drops[i]++;
+      }
+    }
+
+    setInterval(drawMatrix, 33);
   </script></body>
 </html>
