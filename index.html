@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -6,9 +7,9 @@
   <style>
     body {
       margin: 0;
-      font-family: monospace;
+      font-family: 'Courier New', monospace;
       color: #00ff00;
-      background: #330000;
+      background: #000;
       overflow: hidden;
     }
     .matrix {
@@ -18,72 +19,130 @@
       width: 100%;
       height: 100%;
       z-index: -1;
+      opacity: 0.8;
     }
     .container {
       padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+      background: rgba(0, 0, 0, 0.7);
+      border: 1px solid #00ff00;
+      box-shadow: 0 0 20px #00ff00;
+      margin-top: 50px;
     }
     h1 {
       font-size: 2em;
-      animation: typing 3s steps(30, end), blink 0.5s step-end infinite alternate;
-      white-space: nowrap;
-      overflow: hidden;
-      border-right: 0.15em solid #00ff00;
-      width: 22ch;
+      text-align: center;
+      text-shadow: 0 0 10px #00ff00;
+      margin-bottom: 30px;
+      position: relative;
     }
-    @keyframes typing {
-      from { width: 0 }
-      to { width: 22ch }
+    h1::after {
+      content: "";
+      display: block;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #00ff00, transparent);
+      margin-top: 10px;
     }
-    @keyframes blink {
-      50% { border-color: transparent }
+    label {
+      display: block;
+      margin-top: 20px;
+      color: #00ff00;
+      text-shadow: 0 0 5px #00ff00;
+      font-weight: bold;
     }
-    label, select, textarea, input, button {
+    select, textarea, input {
       display: block;
       width: 100%;
       margin-top: 10px;
-      background-color: #000;
+      background-color: rgba(0, 0, 0, 0.8);
       color: #00ff00;
       border: 1px solid #00ff00;
-      padding: 10px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 16px;
+      box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
     }
     button {
+      display: block;
+      width: 100%;
+      margin-top: 30px;
+      background-color: #003300;
+      color: #00ff00;
+      border: 1px solid #00ff00;
+      padding: 15px;
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      font-weight: bold;
       cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      transition: all 0.3s;
+      box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+    }
+    button:hover {
+      background-color: #00ff00;
+      color: #000;
+      box-shadow: 0 0 20px #00ff00;
     }
     .footer {
-      margin-top: 20px;
+      margin-top: 30px;
       text-align: center;
       font-size: 14px;
+      color: #008800;
     }
     .whatsapp-link {
       display: inline-block;
       color: #00ff00;
-      margin-top: 10px;
-      text-decoration: underline;
+      margin-top: 15px;
+      text-decoration: none;
+      border: 1px solid #00ff00;
+      padding: 8px 15px;
+      transition: all 0.3s;
+    }
+    .whatsapp-link:hover {
+      background-color: #00ff00;
+      color: #000;
+    }
+    .glitch {
+      animation: glitch 1s linear infinite;
+    }
+    @keyframes glitch {
+      0% { text-shadow: 0 0 5px #00ff00; }
+      25% { text-shadow: -2px 0 5px #ff0000; }
+      50% { text-shadow: 2px 0 5px #0000ff; }
+      75% { text-shadow: -2px 0 5px #ff00ff; }
+      100% { text-shadow: 0 0 5px #00ff00; }
     }
   </style>
 </head>
 <body>
   <canvas class="matrix"></canvas>
   <div class="container">
-    <h1>WhatsApp Unban Tool</h1>
-    <label for="banType">Select Ban Type:</label>
+    <h1 class="glitch">WHATSAPP UNBAN TOOL</h1>
+    
+    <label for="banType">SELECT UNBAN OPTION:</label>
     <select id="banType">
-      <option value="normal">Normal Ban</option>
-      <option value="permanent">Permanent Ban</option>
-    </select><label for="phoneNumber">Enter Banned Number (with country code):</label>
-<input type="text" id="phoneNumber" placeholder="e.g. +923001234567" />
+      <option value="normal">NORMAL BAN NUMBER UNBANNED</option>
+      <option value="permanent">PERMANENT BAN NUMBER UNBANNED</option>
+    </select>
 
-<label for="promptSelect">Select a Prompt:</label>
-<select id="promptSelect"></select>
+    <label for="phoneNumber">ENTER YOUR NUMBER WITH +92:</label>
+    <input type="text" id="phoneNumber" placeholder="e.g. +923001234567" />
 
-<button onclick="sendMail()">Send Email</button>
+    <label for="promptSelect">SELECT PROMPT:</label>
+    <select id="promptSelect"></select>
 
-<div class="footer">
-  <p>DEVELOPED BY OLD-HACKER</p>
-  <a class="whatsapp-link" href="https://whatsapp.com/channel/0029VavHzv259PwTIz1XxJ09" target="_blank">Join Our WhatsApp Channel</a>
-</div>
+    <button onclick="sendMail()">SEND UNBAN REQUEST</button>
 
-  </div>  <script>
+    <div class="footer">
+      <p>DEVELOPED BY OLD-HACKER | BLOOD-HACK v3.1.4</p>
+      <a class="whatsapp-link" href="https://whatsapp.com/channel/0029VavHzv259PwTIz1XxJ09" target="_blank">JOIN OUR WHATSAPP CHANNEL</a>
+    </div>
+  </div>
+
+  <script>
     const prompts = {
       normal: [
         "Hello WhatsApp Support, my number {number} was mistakenly banned. Kindly review and restore my access. Thank you.",
@@ -99,7 +158,7 @@
         "This is a request to reconsider the permanent ban on my number {number}. I assure compliance in the future.",
         "Please unban my number {number}. I take full responsibility and seek one final chance to use WhatsApp responsibly.",
         "I acknowledge mistakes on number {number}. Requesting a final opportunity and committing to policy adherence.",
-        "Kindly re-review the permanent ban on {number}. I’m ready to comply with all community standards."
+        "Kindly re-review the permanent ban on {number}. I'm ready to comply with all community standards."
       ]
     };
 
@@ -112,7 +171,7 @@
       prompts[type].forEach((prompt, index) => {
         const option = document.createElement('option');
         option.value = index;
-        option.textContent = prompt.replace('{number}', '[Your Number]');
+        option.textContent = prompt.replace('{number}', '[YOUR NUMBER]');
         promptSelectEl.appendChild(option);
       });
     }
@@ -128,28 +187,52 @@
     banTypeEl.addEventListener('change', updatePromptOptions);
     window.onload = updatePromptOptions;
 
-    // Hacker background animation
+    // Enhanced Matrix animation
     const canvas = document.querySelector(".matrix");
     const ctx = canvas.getContext("2d");
     canvas.height = window.innerHeight;
     canvas.width = window.innerWidth;
-    const letters = "01";
-    const fontSize = 14;
+    
+    const katakana = 'アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン';
+    const latin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const nums = '0123456789';
+    const symbols = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+    const alphabet = katakana + latin + nums + symbols;
+    
+    const fontSize = 16;
     const columns = canvas.width / fontSize;
-    const drops = Array.from({ length: columns }).fill(1);
+    const rainDrops = Array(columns).fill(1);
 
     function draw() {
-      ctx.fillStyle = "rgba(51, 0, 0, 0.1)";
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = "#00ff00";
-      ctx.font = `${fontSize}px monospace`;
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters[Math.floor(Math.random() * letters.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-        drops[i]++;
+      
+      ctx.fillStyle = '#0f0';
+      ctx.font = fontSize + 'px monospace';
+      
+      for(let i = 0; i < rainDrops.length; i++) {
+        const text = alphabet.charAt(Math.floor(Math.random() * alphabet.length));
+        ctx.fillText(text, i * fontSize, rainDrops[i] * fontSize);
+        
+        if(rainDrops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          rainDrops[i] = 0;
+        }
+        rainDrops[i]++;
       }
     }
-    setInterval(draw, 33);
-  </script></body>
+    
+    setInterval(draw, 30);
+    
+    // Glitch effect for the container
+    setInterval(() => {
+      const container = document.querySelector('.container');
+      if(Math.random() > 0.9) {
+        container.style.boxShadow = '0 0 30px #ff0000';
+        setTimeout(() => {
+          container.style.boxShadow = '0 0 20px #00ff00';
+        }, 100);
+      }
+    }, 500);
+  </script>
+</body>
 </html>
