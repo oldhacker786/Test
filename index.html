@@ -139,6 +139,34 @@
         .blink {
             animation: blink 1s infinite;
         }
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .loading-bar {
+            width: 100%;
+            height: 20px;
+            background-color: #000;
+            border-radius: 5px;
+            border: 1px solid #0f0;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .loading-progress {
+            height: 100%;
+            background-color: #0f0;
+            width: 0%;
+            animation: loading 2s forwards;
+        }
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+        .loading-text {
+            margin-top: 10px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -157,6 +185,13 @@
             <input type="number" id="num5" maxlength="1" min="0" max="9" oninput="moveFocus(5)">
         </div>
         <button onclick="predict()">[ RUN PREDICTION ALGORITHM ]</button>
+    </div>
+
+    <div class="loading" id="loading">
+        <div class="loading-bar">
+            <div class="loading-progress"></div>
+        </div>
+        <div class="loading-text">ANALYZING PATTERNS... AI PREDICTION IN PROGRESS</div>
     </div>
 
     <div class="result" id="result" style="display: none;">
@@ -222,26 +257,35 @@
                 return;
             }
             
-            // Display number types
-            displayNumberTypes(nums);
+            // Show loading animation
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
             
-            // AI Prediction Logic
-            const analysis = analyzePattern(nums);
-            const prediction = makePrediction(nums, analysis);
-            
-            // Display results
-            document.getElementById('prediction').textContent = prediction.prediction;
-            document.getElementById('confidenceBar').style.width = prediction.confidence + '%';
-            document.getElementById('confidenceText').textContent = `CONFIDENCE LEVEL: ${prediction.confidence}%`;
-            document.getElementById('patternInfo').textContent = `PATTERN DETECTED: ${prediction.pattern}`;
-            document.getElementById('recommendation').textContent = `RECOMMENDED ACTION: ${prediction.recommendation}`;
-            document.getElementById('result').style.display = 'block';
-            
-            // Add to history
-            addHistory(nums, prediction);
-            
-            // Clear inputs after prediction
-            clearInputs();
+            // After loading completes, show results
+            setTimeout(function() {
+                document.getElementById('loading').style.display = 'none';
+                
+                // Display number types
+                displayNumberTypes(nums);
+                
+                // AI Prediction Logic
+                const analysis = analyzePattern(nums);
+                const prediction = makePrediction(nums, analysis);
+                
+                // Display results
+                document.getElementById('prediction').textContent = prediction.prediction;
+                document.getElementById('confidenceBar').style.width = prediction.confidence + '%';
+                document.getElementById('confidenceText').textContent = `CONFIDENCE LEVEL: ${prediction.confidence}%`;
+                document.getElementById('patternInfo').textContent = `PATTERN DETECTED: ${prediction.pattern}`;
+                document.getElementById('recommendation').textContent = `RECOMMENDED ACTION: ${prediction.recommendation}`;
+                document.getElementById('result').style.display = 'block';
+                
+                // Add to history
+                addHistory(nums, prediction);
+                
+                // Clear inputs after prediction
+                clearInputs();
+            }, 2000); // 2 second loading animation
         }
         
         function clearInputs() {
@@ -371,7 +415,7 @@
             if (bigProb >= 65 || smallProb >= 65) {
                 const predictedType = bigProb > smallProb ? 'BIG' : 'SMALL';
                 confidence = Math.max(bigProb, smallProb);
-                prediction = `[PREDICTION] NEXT: ${predictedType} (STRONG SIGNAL)`;
+                prediction = `[PREDICTION] NEXT WINNER: ${predictedType} (${Math.round(confidence)}% CHANCE)`;
                 pattern = getPatternDescription(analysis, predictedType);
                 recommendation = confidence >= 75 ? 
                     "HIGH CONFIDENCE - RECOMMENDED BET" : 
@@ -379,7 +423,7 @@
             } else {
                 const predictedType = bigProb > smallProb ? 'BIG' : 'SMALL';
                 confidence = Math.max(bigProb, smallProb);
-                prediction = `[PREDICTION] SLIGHT EDGE: ${predictedType}`;
+                prediction = `[PREDICTION] NEXT WINNER: ${predictedType} (${Math.round(confidence)}% CHANCE)`;
                 pattern = "NO STRONG PATTERN DETECTED";
                 recommendation = "SMALL BET OR WAIT FOR CLEARER PATTERN";
             }
