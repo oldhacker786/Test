@@ -1,129 +1,120 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WhatsApp Unban Tool</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsApp Unban Request</title>
   <style>
     body {
-      background: #000 url('https://i.ibb.co/fM0xTfP/matrix-bg.gif') repeat;
-      color: #00ff00;
-      font-family: monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      background: url('https://i.ibb.co/YhdXmn0/matrix-bg.gif') center center fixed;
+      background-size: cover;
+      font-family: 'Courier New', Courier, monospace;
+      color: #0f0;
       padding: 20px;
     }
     .container {
-      border: 2px solid #00ff00;
-      border-radius: 10px;
+      background-color: rgba(0, 0, 0, 0.85);
       padding: 20px;
-      background-color: rgba(0, 0, 0, 0.8);
-      box-shadow: 0 0 15px #00ff00;
+      border-radius: 10px;
+      border: 2px solid #0f0;
+      box-shadow: 0 0 20px #0f0;
       max-width: 500px;
-      width: 100%;
+      margin: auto;
     }
-    select, input, button {
+    select, input {
       width: 100%;
       padding: 10px;
-      margin-top: 10px;
-      background: black;
-      color: #00ff00;
-      border: 1px solid #00ff00;
-      border-radius: 5px;
+      background: #000;
+      color: #0f0;
+      border: 1px solid #0f0;
+      margin-bottom: 10px;
     }
     button {
+      width: 100%;
+      padding: 10px;
+      background: #0f0;
+      color: #000;
       font-weight: bold;
+      border: none;
       cursor: pointer;
     }
-    .email-preview {
-      white-space: pre-wrap;
-      background: black;
-      padding: 10px;
-      border-radius: 5px;
-      margin-top: 10px;
-      border: 1px solid #00ff00;
+    button:hover {
+      background: #0c0;
     }
     .footer {
       margin-top: 20px;
       text-align: center;
+      color: #0f0;
+      font-size: 0.9em;
     }
     .footer a {
-      color: #00ff00;
-      text-decoration: none;
+      color: #0f0;
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2 id="title">🛰️ WhatsApp Unban Tool</h2><label for="banType">Choose Ban Type:</label>
-<select id="banType">
-  <option value="normal">Normal Ban</option>
-  <option value="permanent">Permanent Ban</option>
-</select>
+    <h2>📡 WhatsApp Unban Request</h2>
+    <label>Choose Ban Type:</label>
+    <select id="banType" onchange="updatePrompts()">
+      <option value="normal">Normal Ban</option>
+      <option value="permanent">Permanent Ban</option>
+    </select><label>Your Banned WhatsApp Number:</label>
+<input type="text" id="waNumber" placeholder="e.g. +923xxxxxxxxx" />
 
-<label for="number">Your Banned WhatsApp Number:</label>
-<input type="text" id="number" placeholder="e.g., +923001234567" />
+<label>Choose Unban Reason:</label>
+<select id="promptSelector"></select>
 
-<label for="prompt">Choose Unban Reason:</label>
-<select id="prompt"></select>
+<button onclick="generateEmail()">📧 Send Email</button>
 
-<a id="sendMail" href="#" target="_blank">
-  <button>📧 Send Unban Email</button>
-</a>
-
-<div class="email-preview" id="preview"></div>
 <div class="footer">
-  📢 <a href="https://whatsapp.com/channel/old-hacker">Join My WhatsApp Channel</a><br>
+  📢 <a href="https://whatsapp.com/channel/0029VaDPyJD5M2CyJYkXBl3K" target="_blank">Join Our WhatsApp Channel</a><br>
   🤖 Developed by <strong>OLD-HACKER</strong>
 </div>
 
   </div>  <script>
     const prompts = {
       normal: [
-        "I believe my account was banned by mistake. Kindly review and lift the ban.",
-        "Hello WhatsApp team, I’ve always followed the rules. Please restore my access.",
-        "I didn’t violate any terms knowingly. Kindly help me recover my number.",
-        "Please help. My WhatsApp number got banned unfairly. Requesting review.",
-        "It may have been flagged wrongly. Kindly restore the number.",
-        "I respectfully appeal for unban. I depend on WhatsApp daily."
+        "Hi WhatsApp Team, my number was banned mistakenly. I haven't violated any terms. Kindly review and unban it.",
+        "Hello, please recheck my WhatsApp number. I believe it was banned in error. Awaiting your help.",
+        "My WhatsApp was blocked without warning. Kindly explain the reason and unban it if possible.",
+        "Dear Team, I respect your policies. I request a second chance and would appreciate your support.",
+        "I apologize if anything went wrong unknowingly. Please review and reactivate my number.",
+        "Please consider unbanning my number. I rely on WhatsApp daily for work and communication."
       ],
       permanent: [
-        "I've reviewed WhatsApp’s policies and assure future compliance. Please remove the permanent ban.",
-        "I’m truly sorry for any violations. Kindly give me a second chance.",
-        "Please reconsider the permanent ban. I need WhatsApp for communication.",
-        "I understand my mistake and promise to follow guidelines. Kindly unban.",
-        "I request for review and leniency for permanent restriction.",
-        "I've read and accepted the terms. Please lift the permanent restriction."
+        "Dear WhatsApp Team, I believe my number was permanently banned in error. I’ve carefully reviewed the Terms of Service and assure compliance. Kindly lift the restriction.",
+        "Hello Team, I respect the community standards. I am requesting a review of my permanently banned number. I’m willing to cooperate fully. Please assist.",
+        "My account was banned permanently. I humbly request a second chance. I understand the rules and will strictly follow them moving forward.",
+        "Please investigate my number. I assure you I haven’t intentionally violated any terms. I need WhatsApp to stay connected with my family.",
+        "I understand that my number has been permanently banned. I’m sincerely sorry if I unknowingly caused this. Kindly unban and allow me to continue using your service.",
+        "Dear Support, I respectfully appeal for reinstatement of my banned number. I value WhatsApp deeply and request your help in reactivating it."
       ]
     };
 
-    const banTypeEl = document.getElementById('banType');
-    const promptEl = document.getElementById('prompt');
-    const numberEl = document.getElementById('number');
-    const previewEl = document.getElementById('preview');
-    const sendMailBtn = document.getElementById('sendMail');
-
     function updatePrompts() {
-      const type = banTypeEl.value;
-      promptEl.innerHTML = prompts[type].map((text, i) => `<option value="${text}">Prompt ${i + 1}</option>`).join('');
-      updatePreview();
+      const type = document.getElementById('banType').value;
+      const selector = document.getElementById('promptSelector');
+      selector.innerHTML = '';
+      prompts[type].forEach((text, index) => {
+        const option = document.createElement('option');
+        option.value = text;
+        option.text = `Prompt ${index + 1}`;
+        selector.appendChild(option);
+      });
     }
 
-    function updatePreview() {
-      const number = numberEl.value.trim();
-      const body = promptEl.value;
-      previewEl.innerText =
-        `To: support@support.whatsapp.com\nSubject: WhatsApp Ban Appeal\n\nNumber: ${number}\n\n${body}`;
+    function generateEmail() {
+      const email = 'support@support.whatsapp.com';
+      const number = document.getElementById('waNumber').value.trim();
+      const message = document.getElementById('promptSelector').value;
 
-      const mailto = `mailto:support@support.whatsapp.com?subject=WhatsApp%20Ban%20Appeal&body=Number:%20${encodeURIComponent(number)}%0A%0A${encodeURIComponent(body)}`;
-      sendMailBtn.href = mailto;
+      const body = `Number: ${number}%0D%0A%0D%0A${encodeURIComponent(message)}`;
+      const subject = 'WhatsApp Ban Appeal';
+      const mailto = `mailto:${email}?subject=${subject}&body=${body}`;
+      window.location.href = mailto;
     }
 
-    numberEl.addEventListener('input', updatePreview);
-    promptEl.addEventListener('change', updatePreview);
-    banTypeEl.addEventListener('change', updatePrompts);
-
-    // initialize
-    updatePrompts();
+    window.onload = updatePrompts;
   </script></body>
 </html>
