@@ -111,7 +111,7 @@
     <hr>
 
     <label>ENTER YOUR NUMBER</label>
-    <input type="text" id="phoneNumber" placeholder="e.g. +923001234567" value="+923277712440">
+    <input type="text" id="phoneNumber" placeholder="e.g. +923001234567">
 
     <hr>
 
@@ -160,32 +160,15 @@
       const promptIndex = document.getElementById('promptSelect').value;
       const selectedPrompt = prompts[type][promptIndex].replace('{number}', number);
       
-      // Create a form to submit the data
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = 'mailto:support@support.whatsapp.com';
-      form.enctype = 'text/plain';
+      // Create mailto link with proper subject and body
+      const subject = 'Unban Request for ' + number;
+      const mailtoLink = 'mailto:support@support.whatsapp.com?subject=' + 
+                         encodeURIComponent(subject) + 
+                         '&body=' + 
+                         encodeURIComponent(selectedPrompt);
       
-      // Add subject field
-      const subjectInput = document.createElement('input');
-      subjectInput.type = 'hidden';
-      subjectInput.name = 'subject';
-      subjectInput.value = 'Unban Request';
-      form.appendChild(subjectInput);
-      
-      // Add body field
-      const bodyInput = document.createElement('input');
-      bodyInput.type = 'hidden';
-      bodyInput.name = 'body';
-      bodyInput.value = selectedPrompt;
-      form.appendChild(bodyInput);
-      
-      // Append form to body and submit
-      document.body.appendChild(form);
-      form.submit();
-      
-      // Remove the form after submission
-      document.body.removeChild(form);
+      // Open the email client
+      window.location.href = mailtoLink;
     }
   </script>
 </body>
