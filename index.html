@@ -114,7 +114,7 @@
 
     <hr>
 
-    <label>PAGE 6: YOUR request</label>
+    <label>ENTER YOUR NUMBER</label>
     <input type="text" id="phoneNumber" placeholder="e.g. +923001234567">
 
     <hr>
@@ -164,7 +164,7 @@
       const promptIndex = document.getElementById('promptSelect').value;
       const selectedPrompt = prompts[type][promptIndex].replace('{number}', number);
       
-      const subject = 'Unban Request for ' + number;
+      const subject = 'Unban Request ';
       const mailtoLink = 'mailto:support@support.whatsapp.com?subject=' + 
                        encodeURIComponent(subject) + 
                        '&body=' + 
